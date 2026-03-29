@@ -16,6 +16,30 @@
   padding: 0 2rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+}
+
+.contactButton {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  padding: 0.6rem 1.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s, transform 0.2s, opacity 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.contactButton:hover {
+  background-color: var(--primary);
+  opacity: 0.9;
+  transform: translateY(-2px);
 }
 
 .logo {

@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { PublicLayout } from './layouts/PublicLayout';
+import { HomePage } from './pages/public/HomePage/HomePage';
 
 export const router = createBrowserRouter([
   {
@@ -8,7 +9,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <div>Home Page Placeholder</div>,
+        element: <HomePage />,
       },
     ],
   },
