@@ -1,9 +1,8 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import styles from './Navbar.module.css';
 
-export const Navbar: React.FC = () => {
+export function Navbar() {
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
@@ -17,4 +16,4 @@ export const Navbar: React.FC = () => {
       </div>
     </nav>
   );
-};
+}

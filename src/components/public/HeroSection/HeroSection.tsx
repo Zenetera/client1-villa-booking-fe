@@ -1,8 +1,7 @@
-import React from 'react';
 import heroImage from '../../../assets/hero.jpg';
 import styles from './HeroSection.module.css';
 
-export const HeroSection: React.FC = () => {
+export function HeroSection() {
   return (
     <section className={styles.hero}>
       <img src={heroImage} alt="" className={styles.image} />
@@ -20,4 +19,4 @@ export const HeroSection: React.FC = () => {
       <div className={styles.bottomFade} />
     </section>
   );
-};
+}

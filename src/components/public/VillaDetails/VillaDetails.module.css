@@ -1,0 +1,111 @@
+.section {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 0.6fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* ── Left column ── */
+
+.info {
+  min-width: 0;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--muted-foreground);
+  margin: 0 0 0.5rem;
+}
+
+.locationIcon {
+  color: var(--muted-foreground);
+  flex-shrink: 0;
+}
+
+.villaName {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0 0 0.5rem;
+  line-height: 1.15;
+}
+
+.tagline {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--muted-foreground);
+  margin: 0 0 1.5rem;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0 0 1.5rem;
+}
+
+/* ── Property specs ── */
+
+.specs {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.spec {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.specIcon {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+/* ── About section ── */
+
+.aboutHeading {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 1rem;
+}
+
+.aboutText {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--secondary-foreground);
+  margin: 0 0 1rem;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 900px) {
+  .section {
+    grid-template-columns: 1fr;
+  }
+
+  .specs {
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+  }
+}
+
+.card {
+  width: 100%;
+  max-width: 340px;
+}

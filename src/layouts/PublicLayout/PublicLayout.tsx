@@ -1,9 +1,8 @@
-import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { Navbar } from '../../components/public/Navbar';
 import styles from './PublicLayout.module.css';
 
-export const PublicLayout: React.FC = () => {
+export function PublicLayout() {
   return (
     <div className={styles.layout}>
       <Navbar />
@@ -12,4 +11,4 @@ export const PublicLayout: React.FC = () => {
       </main>
     </div>
   );
-};
+}
