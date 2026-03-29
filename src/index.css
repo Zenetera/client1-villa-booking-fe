@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Colors */
+  --background: #FBFAF9;
+  --foreground: #221F1C;
+  
+  --card: #FDFDFC;
+  --card-foreground: #221F1C;
+  
+  --popover: #FDFDFC;
+  --popover-foreground: #221F1C;
+  
+  --primary: #AB672B;
+  --primary-foreground: #FBFAF9;
+  
+  --secondary: #F1EEEA;
+  --secondary-foreground: #38332E;
+  
+  --muted: #F2F0ED;
+  --muted-foreground: #78736D;
+  
+  --accent: #478570;
+  --accent-foreground: #FBFAF9;
+  
+  --destructive: #DC2828;
+  --destructive-foreground: #FAFAFA;
+  
+  --border: #E5E1DC;
+  --input: #E5E1DC;
+  --ring: #AB672B;
+  
+  /* Charts */
+  --chart-1: #AB672B;
+  --chart-2: #478570;
+  --chart-3: #B89E7A;
+  --chart-4: #608A9F;
+  --chart-5: #DDB43C;
+  
+  /* Sidebar */
+  --sidebar-background: #F9F8F6;
+  --sidebar-foreground: #38332E;
+  --sidebar-primary: #AB672B;
+  --sidebar-primary-foreground: #FBFAF9;
+  --sidebar-accent: #F1EEEA;
+  --sidebar-accent-foreground: #38332E;
+  --sidebar-border: #E5E1DC;
+  --sidebar-ring: #AB672B;
+
+  /* Fonts */
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+}
