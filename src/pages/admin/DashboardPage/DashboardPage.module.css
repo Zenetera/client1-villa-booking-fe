@@ -1,0 +1,60 @@
+.page {
+  min-height: 100vh;
+  background-color: var(--background);
+  padding: 2rem;
+}
+
+.header {
+  max-width: 1100px;
+  margin: 0 auto 2rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 0.2rem;
+}
+
+.subtitle {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+.logoutButton {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.logoutButton:hover {
+  border-color: var(--foreground);
+  color: var(--foreground);
+}
+
+.placeholder {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  text-align: center;
+  background-color: var(--secondary);
+  border-radius: 8px;
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+}

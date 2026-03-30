@@ -1,0 +1,112 @@
+.footer {
+  background-color: #1C1917;
+  border-top: 1px solid #2D2A27;
+  padding: 2.5rem 0 2rem;
+  margin-top: auto;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.brandName {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #F5F1EC;
+}
+
+.tagline {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: #9C9590;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.location {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: #9C9590;
+  margin: 0;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.columnHeading {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6B6560;
+  margin: 0;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.link {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #C9C4BE;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: #F5F1EC;
+}
+
+.moreButton {
+  position: absolute;
+  top: -2rem;
+  right: 2rem;
+  background: none;
+  border: none;
+  color: #6B6560;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.moreButton:hover {
+  color: #9C9590;
+}
+
+@media (max-width: 640px) {
+  .columns {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+
+  .moreButton {
+    top: -1.75rem;
+  }
+}

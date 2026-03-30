@@ -1,0 +1,47 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  min-height: calc(100vh - 200px);
+}
+
+.content {
+  color: #333;
+}
+
+.content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #111;
+}
+
+.content section {
+  margin-bottom: 2.5rem;
+}
+
+.content h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+.content p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.content ul {
+  margin-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.lastUpdated {
+  margin-top: 3rem;
+  font-style: italic;
+  color: #666;
+}
