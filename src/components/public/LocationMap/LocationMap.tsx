@@ -3,9 +3,9 @@ import styles from './LocationMap.module.css';
 
 export function LocationMap() {
   return (
-    <section id="location" className={styles.section}>
+    <section className={styles.section}>
       <div className={styles.topRow}>
-        <div className={styles.mapWrapper}>
+        <div id="location"className={styles.mapWrapper}>
           <iframe
             className={styles.map}
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d48456.85488425492!2d14.560055!3d40.633333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x133b975f6cfae565%3A0xc8ddf8e0b8e5e1d0!2sAmalfi%20Coast!5e0!3m2!1sen!2sit!4v1700000000000"
@@ -16,7 +16,7 @@ export function LocationMap() {
           />
         </div>
 
-        <div className={styles.rightCol}>
+        <div id="contact" className={styles.rightCol}>
           <h3 className={styles.formHeading}>Send a Message</h3>
           <form className={styles.form}>
             <div className={styles.formRow}>
