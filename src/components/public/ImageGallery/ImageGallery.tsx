@@ -73,7 +73,7 @@ export function ImageGallery() {
 
   if (images.length < 6) return null;
 
-  const moreCount = images.length - 5;
+  const moreCount = images.length - 6;
 
   return (
     <>
@@ -93,12 +93,14 @@ export function ImageGallery() {
         <div className={styles.cell} onClick={() => open(4)}>
           <img src={images[4]} alt="Villa photo 5" className={styles.img} />
         </div>
-        <div className={`${styles.cell} ${styles.moreCell}`} onClick={() => open(5)}>
+        <div className={`${styles.cell}${moreCount > 0 ? ` ${styles.moreCell}` : ''}`} onClick={() => open(5)}>
           <img src={images[5]} alt="More villa photos" className={styles.img} />
-          <div className={styles.moreOverlay}>
-            <span className={styles.moreCount}>+{moreCount}</span>
-            <span className={styles.moreLabel}>more photos</span>
-          </div>
+          {moreCount > 0 && (
+            <div className={styles.moreOverlay}>
+              <span className={styles.moreCount}>+{moreCount}</span>
+              <span className={styles.moreLabel}>more photos</span>
+            </div>
+          )}
         </div>
       </section>
 

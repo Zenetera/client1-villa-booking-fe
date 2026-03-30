@@ -122,10 +122,14 @@
   cursor: pointer;
   transition: background 0.2s ease;
   z-index: 10;
+  outline: none;
 }
 
-.closeBtn:hover {
+.closeBtn:hover,
+.closeBtn:focus-visible {
   background: rgba(255, 255, 255, 0.18);
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
 .prevBtn,
@@ -145,6 +149,7 @@
   cursor: pointer;
   transition: background 0.2s ease;
   z-index: 10;
+  outline: none;
 }
 
 .prevBtn {
@@ -156,8 +161,12 @@
 }
 
 .prevBtn:hover,
-.nextBtn:hover {
+.nextBtn:hover,
+.prevBtn:focus-visible,
+.nextBtn:focus-visible {
   background: rgba(255, 255, 255, 0.18);
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
 .counter {
