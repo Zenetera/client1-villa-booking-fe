@@ -78,6 +78,10 @@ export function BookingForm({
         onChange={handleGuestInfoChange}
       />
 
+      <div className={styles.depositInfo}>
+        Deposit is <strong>10%</strong> of the total booking amount to be paid in advance. The remaining balance will be due upon check-in.
+      </div>
+
       <button type="submit" className={styles.submitButton}>
         Request Booking
       </button>

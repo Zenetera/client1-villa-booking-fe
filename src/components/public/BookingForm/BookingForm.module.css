@@ -61,6 +61,13 @@
   margin: 0 0 1.5rem;
 }
 
+.depositInfo {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--muted-foreground);
+  margin-top: 1.5rem;
+}
+
 .submitButton {
   width: 100%;
   padding: 0.85rem;

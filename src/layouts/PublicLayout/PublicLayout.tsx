@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { Navbar } from '../../components/public/Navbar';
+import { Footer } from '../../components/public/Footer';
 import styles from './PublicLayout.module.css';
 
 export function PublicLayout() {
@@ -9,6 +10,7 @@ export function PublicLayout() {
       <main className={styles.main}>
         <Outlet />
       </main>
+      <Footer />
     </div>
   );
 }
