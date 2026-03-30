@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './TermsPage.module.css';
 
 export function TermsPage() {

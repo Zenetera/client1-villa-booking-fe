@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './PrivacyPage.module.css';
 
 export function PrivacyPage() {
