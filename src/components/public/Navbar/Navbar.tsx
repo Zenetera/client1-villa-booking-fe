@@ -24,10 +24,10 @@ export function Navbar() {
           <div className={styles.navLinks}>
             <a href="#booking" onClick={(e) => scrollToSection(e, 'booking')} className={styles.navLink}>Booking</a>
             <a href="#gallery" onClick={(e) => scrollToSection(e, 'gallery')} className={styles.navLink}>Gallery</a>
-            <a href="#reviews" onClick={(e) => scrollToSection(e, 'reviews')} className={styles.navLink}>Location</a>
+            <a href="#location" onClick={(e) => scrollToSection(e, 'location')} className={styles.navLink}>Location</a>
           </div>
           
-          <a href="mailto:contact@villahaven.com" className={styles.contactButton}>
+          <a href="#contact" onClick={(e) => scrollToSection(e, 'contact')} className={styles.contactButton}>
             Contact Us
           </a>
         </div>
