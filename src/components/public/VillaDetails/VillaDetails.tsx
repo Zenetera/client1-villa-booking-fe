@@ -22,7 +22,7 @@ export function VillaDetails({ villa }: VillaDetailsProps) {
     currency,
   } = villa;
   return (
-    <section className={styles.section}>
+    <section id='booking' className={styles.section}>
       {/* Left column – villa info */}
       <div className={styles.info}>
         <p className={styles.location}>

@@ -29,11 +29,12 @@
   font-weight: 500;
   cursor: pointer;
   border-radius: 4px;
-  transition: background-color 0.2s, transform 0.2s, opacity 0.2s;
+  transition: background-color 0.2s, transform 0.2s, opacity 0.2s, outline 0.2s;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   text-decoration: none;
   display: inline-block;
+  outline: none;
 }
 
 .contactButton:hover {
@@ -42,12 +43,25 @@
   transform: translateY(-2px);
 }
 
+.contactButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+
 .logo {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
   color: #333;
+  outline: none;
+  border-radius: 4px;
+  transition: outline 0.2s ease;
+}
+
+.logo:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
 }
 
 .icon {
@@ -60,4 +74,37 @@
   font-size: 1.5rem;
   font-weight: 600;
   color: #2b2b2b;
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.navLink {
+  color: #333;
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.2s ease, outline 0.2s ease;
+  outline: none;
+}
+
+.navLink:hover,
+.navLink:focus-visible {
+  color: var(--primary);
+}
+
+.navLink:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
