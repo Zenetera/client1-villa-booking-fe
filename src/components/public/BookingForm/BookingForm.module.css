@@ -66,6 +66,39 @@
   font-size: 0.9rem;
   color: var(--muted-foreground);
   margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--foreground);
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.checkbox {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.termsLink {
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-color: rgba(171, 103, 43, 0.3);
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.termsLink:hover {
+  text-decoration-color: var(--primary);
 }
 
 .submitButton {
@@ -84,7 +117,25 @@
   margin-top: 1.5rem;
 }
 
-.submitButton:hover {
+.submitButton:hover:not(:disabled) {
   opacity: 0.9;
   transform: translateY(-1px);
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 640px) {
+  .card {
+    padding: 1.5rem;
+    position: static;
+  }
+
+  .dateRow {
+    grid-template-columns: 1fr;
+  }
 }

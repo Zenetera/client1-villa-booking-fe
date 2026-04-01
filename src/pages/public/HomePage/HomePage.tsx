@@ -4,16 +4,22 @@ import { SectionIntro } from '../../../components/public/SectionIntro';
 import { VillaDetails } from '../../../components/public/VillaDetails';
 import { ImageGallery } from '../../../components/public/ImageGallery';
 import { LocationMap } from '../../../components/public/LocationMap';
+import { useLanguage } from '../../../context/LanguageContext';
+import styles from './HomePage.module.css';
 
 export function HomePage() {
+  const { t } = useLanguage();
+
   return (
     <>
       <HeroSection />
-      <SectionIntro eyebrow="Your Retreat Awaits" heading="Plan Your Stay" />
+      <SectionIntro eyebrow={t.home.retreatEyebrow} heading={t.home.retreatHeading} />
       <VillaDetails villa={MOCK_VILLA} />
-      <SectionIntro eyebrow="Every corner tells a story of Mediterranean luxury and comfort" heading="Explore the Villa" />
-      <ImageGallery />
-      <SectionIntro eyebrow="Find us on the stunning Amalfi Coast" heading="Location & Contact" />
+      <div className={styles.gallerySection}>
+        <SectionIntro eyebrow={t.home.galleryEyebrow} heading={t.home.galleryHeading} />
+        <ImageGallery />
+      </div>
+      <SectionIntro eyebrow={t.home.locationEyebrow} heading={t.home.locationHeading} />
       <LocationMap />
     </>
   );

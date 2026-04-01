@@ -1,0 +1,852 @@
+.page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: var(--foreground);
+  margin: 0 0 0.25rem;
+}
+
+.subtitle {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+.blockButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--foreground);
+    background: none;
+  color: var(--primary);
+  text-decoration: none;
+  border: 1.5px solid var(--primary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.1s ease;
+}
+
+.blockButton:hover {
+      color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.yearStrip {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.yearLabel {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  min-width: 2.75rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.yearNav {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.yearNav:hover {
+  background: var(--secondary);
+}
+
+.monthsRow {
+  display: flex;
+  gap: 0.3rem;
+  flex: 1;
+  overflow-x: auto;
+  align-items: center;
+  padding: 0.75rem 0.5rem;
+  margin: -0.75rem -0.5rem;
+  scrollbar-width: none;
+}
+
+.monthsRow::-webkit-scrollbar {
+  display: none;
+}
+
+.miniMonth {
+  flex: 1;
+  min-width: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.3rem;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.1s ease, background-color 0.1s ease, transform 0.1s ease;
+  transform-origin: center;
+}
+
+.miniMonth:hover {
+  border-color: var(--border);
+  background: var(--secondary);
+}
+
+.miniActive {
+  border-color: var(--foreground) !important;
+  transform: scale(1.14);
+  position: relative;
+  z-index: 10;
+  background-color: var(--card);
+}
+
+.miniLabel {
+  font-family: var(--font-sans);
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+.miniActive .miniLabel {
+  color: var(--foreground);
+}
+
+.miniGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1.5px;
+  width: 100%;
+}
+
+.miniEmpty {
+  aspect-ratio: 1;
+}
+
+.miniCell {
+  aspect-ratio: 1;
+  border-radius: 1px;
+}
+
+.mini_available {
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+.mini_confirmed {
+  background: #34D399;
+}
+
+.mini_pending {
+  background: #FCD34D;
+}
+
+.mini_overlap {
+  background: #F97316;
+}
+
+.mini_blocked {
+  background: color-mix(in srgb, var(--foreground) 28%, transparent);
+}
+
+.mainLayout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.25rem;
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.875rem;
+}
+
+.monthTitle {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--foreground);
+  margin: 0;
+  min-width: 175px;
+  text-align: center;
+}
+
+.navButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.navButton:hover {
+  background-color: var(--secondary);
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.875rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: var(--muted-foreground);
+}
+
+.legendDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legendConfirmed {
+  background-color: #D1FAE5;
+  border: 1px solid #6EE7B7;
+}
+
+.legendPending {
+  background-color: #FEF3C7;
+  border: 1px solid #FCD34D;
+}
+
+.legendOverlap {
+  background-color: #FED7AA;
+  border: 1px solid #FB923C;
+}
+
+.legendBlocked {
+  background-color: transparent;
+  border: 1px solid var(--border);
+  position: relative;
+}
+
+.legendBlocked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -1px;
+  right: -1px;
+  height: 1px;
+  background: var(--muted-foreground);
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.dayHeader {
+  padding: 0.35rem 0;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-foreground);
+}
+
+.emptyCell {
+  aspect-ratio: 1;
+}
+
+.dayCell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  border-radius: 5px;
+  background-color: var(--background);
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dayCell:hover {
+  background-color: var(--secondary);
+}
+
+.dayNumber {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--foreground);
+  line-height: 1;
+}
+
+.dayLabel {
+  font-family: var(--font-sans);
+  font-size: 0.55rem;
+  color: var(--muted-foreground);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 0.1rem;
+  line-height: 1;
+}
+
+.overlapBadge {
+  font-family: var(--font-sans);
+  font-size: 0.55rem;
+  font-weight: 500;
+  color: #7C2D12;
+  line-height: 1;
+}
+
+.available {
+  background-color: var(--background);
+}
+
+.confirmed {
+  background-color: #D1FAE5;
+}
+
+.confirmed:hover {
+  background-color: #A7F3D0;
+}
+
+.confirmed .dayNumber {
+  color: #065F46;
+}
+
+.pending {
+  background-color: #FEF3C7;
+}
+
+.pending:hover {
+  background-color: #FDE68A;
+}
+
+.pending .dayNumber {
+  color: #92400E;
+}
+
+.overlap {
+  background-color: #FED7AA;
+}
+
+.overlap:hover {
+  background-color: #FDBA74;
+}
+
+.overlap .dayNumber {
+  color: #7C2D12;
+}
+
+.blocked {
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  cursor: not-allowed;
+}
+
+.blocked:hover {
+  background-color: var(--background);
+}
+
+.blocked .dayNumber {
+  text-decoration: line-through;
+  color: var(--muted-foreground);
+}
+
+.sideSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sideCard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.25rem;
+}
+
+.sideCardTitle {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--foreground);
+  margin: 0 0 0.875rem;
+}
+
+.sideCardHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.875rem;
+}
+
+.sideCardHeaderRow .sideCardTitle {
+  margin: 0;
+}
+
+.scopeSelect {
+  font-family: var(--font-sans);
+  font-size: 0.775rem;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.scopeSelect:focus {
+  border-color: var(--foreground);
+}
+
+.sideList {
+  display: flex;
+  flex-direction: column;
+  max-height: 280px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.emptyNote {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.bookingRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.25rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+
+.bookingRow:last-child {
+  border-bottom: none;
+}
+
+.bookingDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot_confirmed {
+  background: #10B981;
+}
+
+.dot_pending {
+  background: #F59E0B;
+}
+
+.bookingInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.bookingName {
+  font-family: var(--font-sans);
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bookingMeta {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: var(--muted-foreground);
+}
+
+.blockedGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.blockedGroupLabel {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-foreground);
+  padding: 0.6rem 0.25rem 0.25rem;
+}
+
+.blockedGroup:first-child .blockedGroupLabel {
+  padding-top: 0.1rem;
+}
+
+.blockedRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.35rem 0.25rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
+}
+
+.blockedRow:last-child {
+  border-bottom: none;
+}
+
+.blockedDate {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--foreground);
+  text-decoration: line-through;
+  text-decoration-color: var(--muted-foreground);
+}
+
+.unblockBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: none;
+  border-radius: 3px;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.12s ease, background-color 0.12s ease;
+}
+
+.unblockBtn:hover {
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 1rem;
+}
+
+.modal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modalTitle {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.modalClose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  border-radius: 5px;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: color 0.12s ease, background-color 0.12s ease;
+}
+
+.modalClose:hover {
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.modalNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.modalMonthLabel {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--foreground);
+  min-width: 140px;
+  text-align: center;
+}
+
+.modalGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.modalDayHeader {
+  padding: 0.3rem 0;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-foreground);
+}
+
+.modalDayCell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  background: var(--background);
+  border: 1px solid transparent;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.modalDayCell:hover:not(:disabled) {
+  background: var(--secondary);
+  border-color: var(--border);
+}
+
+.modalDayCell:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.modalDayExisting {
+  opacity: 0.45;
+}
+
+.modalDayPicked {
+  background-color: color-mix(in srgb, var(--foreground) 15%, transparent) !important;
+  border-color: var(--foreground) !important;
+}
+
+.modalDayStrike {
+  text-decoration: line-through;
+  color: var(--muted-foreground);
+}
+
+.modalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.modalCount {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+}
+
+.modalActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.modalCancel {
+  padding: 0.45rem 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+
+.modalCancel:hover {
+  border-color: var(--foreground);
+  color: var(--foreground);
+}
+
+.modalApply {
+  padding: 0.45rem 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--background);
+  background: var(--foreground);
+  border: 1px solid var(--foreground);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.12s ease;
+}
+
+.modalApply:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.modalApply:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+/* Responsive */
+
+@media (max-width: 1000px) {
+  .mainLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .yearLabel {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .dayLabel {
+    display: none;
+  }
+
+  .legend {
+    gap: 0.5rem 0.875rem;
+  }
+
+  /* Year strip: stack nav tighter, let months scroll */
+  .yearStrip {
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .monthsRow {
+    gap: 0.15rem;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 0.25rem;
+  }
+
+  .miniMonth {
+    min-width: 44px;
+    scroll-snap-align: start;
+  }
+
+  .miniActive {
+    transform: scale(1.08);
+  }
+
+  /* Calendar card: reduce padding so grid cells get more room */
+  .card {
+    padding: 0.75rem;
+  }
+
+  .calendarGrid {
+    gap: 1.5px;
+  }
+
+  .dayCell {
+    border-radius: 4px;
+  }
+
+  .dayNumber {
+    font-size: 0.72rem;
+  }
+
+  .monthTitle {
+    font-size: 0.95rem;
+    min-width: 145px;
+  }
+
+  /* Side panels: tighter padding */
+  .sideCard {
+    padding: 1rem;
+  }
+}

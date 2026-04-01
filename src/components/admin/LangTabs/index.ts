@@ -1,0 +1,1 @@
+export { LangTabs } from './LangTabs';

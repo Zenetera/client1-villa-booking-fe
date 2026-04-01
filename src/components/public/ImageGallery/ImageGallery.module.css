@@ -180,3 +180,76 @@
   letter-spacing: 0.1em;
   color: rgba(255, 255, 255, 0.55);
 }
+
+/* ── View more (mobile only) ── */
+
+.viewMoreRow {
+  display: none;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 640px) {
+  .gallery {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 200px 200px;
+    padding: 0 1rem 1.5rem;
+  }
+
+  .cellLarge {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .hiddenMobile {
+    display: none;
+  }
+
+  .viewMoreRow {
+    display: flex;
+    justify-content: center;
+    padding: 0 1rem 3rem;
+  }
+
+  .viewMoreBtn {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--primary);
+    background: transparent;
+    border: 1.5px solid var(--primary);
+    border-radius: 6px;
+    padding: 0.65rem 2rem;
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .viewMoreBtn:hover {
+    color: var(--primary-foreground);
+    background: var(--primary);
+  }
+
+  .modalInner {
+    padding: 1rem;
+  }
+
+  .modalImage {
+    max-width: 96vw;
+    max-height: 80vh;
+  }
+
+  .prevBtn,
+  .nextBtn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .prevBtn {
+    left: 0.5rem;
+  }
+
+  .nextBtn {
+    right: 0.5rem;
+  }
+}

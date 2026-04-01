@@ -1,0 +1,1 @@
+export { TermsEditorPage } from './TermsEditorPage';

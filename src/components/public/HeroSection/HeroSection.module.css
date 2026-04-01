@@ -85,6 +85,23 @@
   pointer-events: none;
 }
 
+/* ── Responsive ── */
+
+@media (max-width: 640px) {
+  .content {
+    padding: 0 1.25rem;
+    padding-top: 68px;
+  }
+
+  .heading {
+    font-size: clamp(2.25rem, 10vw, 3rem);
+  }
+
+  .eyebrow {
+    font-size: 0.6rem;
+  }
+}
+
 @keyframes fadeUp {
   from {
     opacity: 0;

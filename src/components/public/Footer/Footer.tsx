@@ -1,11 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { MoreHorizontal } from 'lucide-react';
 import { useAuth } from '../../../hooks/useAuth';
+import { useLanguage } from '../../../context/LanguageContext';
 import styles from './Footer.module.css';
 
 export function Footer() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
@@ -27,25 +29,25 @@ export function Footer() {
         <div className={styles.columns}>
           <div className={styles.brand}>
             <span className={styles.brandName}>Sunset Villa</span>
-            <p className={styles.tagline}>Direct booking, no commissions.</p>
-            <p className={styles.location}>Greece</p>
+            <p className={styles.tagline}>{t.footer.tagline}</p>
+            <p className={styles.location}>{t.footer.location}</p>
           </div>
 
           <div className={styles.column}>
-            <h3 className={styles.columnHeading}>Booking</h3>
+            <h3 className={styles.columnHeading}>{t.footer.bookingColumn}</h3>
             <nav className={styles.links}>
-              <a href="#villa-details" onClick={(e) => scrollToSection(e, 'villa-details')} className={styles.link}>Villa details</a>
-              <a href="#booking" onClick={(e) => scrollToSection(e, 'booking')} className={styles.link}>Availability</a>
-              <a href="#booking" onClick={(e) => scrollToSection(e, 'booking')} className={styles.link}>Book now</a>
+              <a href="#villa-details" onClick={(e) => scrollToSection(e, 'villa-details')} className={styles.link}>{t.footer.villaDetails}</a>
+              <a href="#booking" onClick={(e) => scrollToSection(e, 'booking')} className={styles.link}>{t.footer.availability}</a>
+              <a href="#booking" onClick={(e) => scrollToSection(e, 'booking')} className={styles.link}>{t.footer.bookNow}</a>
             </nav>
           </div>
 
           <div className={styles.column}>
-            <h3 className={styles.columnHeading}>Owner</h3>
+            <h3 className={styles.columnHeading}>{t.footer.ownerColumn}</h3>
             <nav className={styles.links}>
-              <a href="/admin" onClick={handleAdminClick} className={styles.link}>Admin dashboard</a>
-              <Link to="/terms" className={styles.link}>Terms</Link>
-              <Link to="/privacy" className={styles.link}>Privacy</Link>
+              <a href="/admin" onClick={handleAdminClick} className={styles.link}>{t.footer.adminDashboard}</a>
+              <Link to="/terms" className={styles.link}>{t.footer.terms}</Link>
+              <Link to="/privacy" className={styles.link}>{t.footer.privacy}</Link>
             </nav>
           </div>
         </div>
