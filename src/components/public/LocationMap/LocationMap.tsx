@@ -1,63 +1,66 @@
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { useLanguage } from '../../../context/LanguageContext';
 import styles from './LocationMap.module.css';
 
 export function LocationMap() {
+  const { t } = useLanguage();
+
   return (
     <section className={styles.section}>
       <div className={styles.topRow}>
-        <div id="location"className={styles.mapWrapper}>
+        <div id="location" className={styles.mapWrapper}>
           <iframe
             className={styles.map}
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d48456.85488425492!2d14.560055!3d40.633333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x133b975f6cfae565%3A0xc8ddf8e0b8e5e1d0!2sAmalfi%20Coast!5e0!3m2!1sen!2sit!4v1700000000000"
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title="Villa location on map"
+            title={t.contact.mapTitle}
           />
         </div>
 
         <div id="contact" className={styles.rightCol}>
-          <h3 className={styles.formHeading}>Send a Message</h3>
+          <h3 className={styles.formHeading}>{t.contact.formHeading}</h3>
           <form className={styles.form}>
             <div className={styles.formRow}>
               <div className={styles.formGroup}>
-                <label className={styles.label} htmlFor="contact-name">Name</label>
+                <label className={styles.label} htmlFor="contact-name">{t.contact.name}</label>
                 <input
                   id="contact-name"
                   type="text"
                   className={styles.input}
-                  placeholder="Your name"
+                  placeholder={t.contact.namePlaceholder}
                 />
               </div>
               <div className={styles.formGroup}>
-                <label className={styles.label} htmlFor="contact-email">Email</label>
+                <label className={styles.label} htmlFor="contact-email">{t.guestInfo.email}</label>
                 <input
                   id="contact-email"
                   type="email"
                   className={styles.input}
-                  placeholder="your@email.com"
+                  placeholder={t.contact.emailPlaceholder}
                 />
               </div>
             </div>
             <div className={styles.formGroup}>
-              <label className={styles.label} htmlFor="contact-subject">Subject</label>
+              <label className={styles.label} htmlFor="contact-subject">{t.contact.subject}</label>
               <input
                 id="contact-subject"
                 type="text"
                 className={styles.input}
-                placeholder="Booking inquiry, question…"
+                placeholder={t.contact.subjectPlaceholder}
               />
             </div>
             <div className={styles.formGroup}>
-              <label className={styles.label} htmlFor="contact-message">Message</label>
+              <label className={styles.label} htmlFor="contact-message">{t.contact.message}</label>
               <textarea
                 id="contact-message"
                 className={styles.textarea}
                 rows={6}
-                placeholder="Tell us about your stay…"
+                placeholder={t.contact.messagePlaceholder}
               />
             </div>
-            <button type="submit" className={styles.submitBtn}>Send Message</button>
+            <button type="submit" className={styles.submitBtn}>{t.contact.sendButton}</button>
           </form>
         </div>
       </div>
@@ -68,7 +71,7 @@ export function LocationMap() {
             <MapPin size={20} />
           </div>
           <div>
-            <h3 className={styles.infoTitle}>Address</h3>
+            <h3 className={styles.infoTitle}>{t.contact.addressTitle}</h3>
             <p className={styles.infoText}>
               Via Marina Grande, 12<br />
               Amalfi, SA 84011<br />
@@ -82,7 +85,7 @@ export function LocationMap() {
             <Phone size={20} />
           </div>
           <div>
-            <h3 className={styles.infoTitle}>Phone</h3>
+            <h3 className={styles.infoTitle}>{t.contact.phoneTitle}</h3>
             <p className={styles.infoText}>+39 089 871 234</p>
           </div>
         </div>
@@ -92,7 +95,7 @@ export function LocationMap() {
             <Mail size={20} />
           </div>
           <div>
-            <h3 className={styles.infoTitle}>Email</h3>
+            <h3 className={styles.infoTitle}>{t.contact.emailTitle}</h3>
             <p className={styles.infoText}>contact@villahaven.com</p>
           </div>
         </div>
@@ -102,10 +105,10 @@ export function LocationMap() {
             <Clock size={20} />
           </div>
           <div>
-            <h3 className={styles.infoTitle}>Check-in / Check-out</h3>
+            <h3 className={styles.infoTitle}>{t.contact.checkInOutTitle}</h3>
             <p className={styles.infoText}>
-              Check-in: 3:00 PM<br />
-              Check-out: 11:00 AM
+              {t.contact.checkInTime}<br />
+              {t.contact.checkOutTime}
             </p>
           </div>
         </div>

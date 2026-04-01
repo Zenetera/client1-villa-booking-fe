@@ -2,6 +2,7 @@ import { MapPin, BedDouble, Bath, Users } from 'lucide-react';
 import type { Villa } from '../../../types/villa';
 import { AmenitiesList } from '../AmenitiesList';
 import { BookingForm } from '../BookingForm';
+import { useLanguage } from '../../../context/LanguageContext';
 import styles from './VillaDetails.module.css';
 
 interface VillaDetailsProps {
@@ -9,18 +10,9 @@ interface VillaDetailsProps {
 }
 
 export function VillaDetails({ villa }: VillaDetailsProps) {
-  const {
-    name,
-    location,
-    tagline,
-    bedrooms,
-    bathrooms,
-    maxGuests,
-    description,
-    amenities,
-    pricePerNight,
-    currency,
-  } = villa;
+  const { t } = useLanguage();
+  const { name, location, bedrooms, bathrooms, maxGuests, amenities, pricePerNight, currency } = villa;
+
   return (
     <section id='booking' className={styles.section}>
       {/* Left column – villa info */}
@@ -30,27 +22,27 @@ export function VillaDetails({ villa }: VillaDetailsProps) {
           {location}
         </p>
         <h2 className={styles.villaName}>{name}</h2>
-        <p className={styles.tagline}>{tagline}</p>
+        <p className={styles.tagline}>{t.villa.tagline}</p>
 
         <hr className={styles.divider} />
 
         <div className={styles.specs}>
           <div className={styles.spec}>
             <BedDouble size={18} className={styles.specIcon} />
-            {bedrooms} Bedrooms
+            {bedrooms} {t.villa.bedrooms}
           </div>
           <div className={styles.spec}>
             <Bath size={18} className={styles.specIcon} />
-            {bathrooms} Bathrooms
+            {bathrooms} {t.villa.bathrooms}
           </div>
           <div className={styles.spec}>
             <Users size={18} className={styles.specIcon} />
-            Up to {maxGuests} Guests
+            {t.villa.upTo} {maxGuests} {t.villa.guests}
           </div>
         </div>
         <hr className={styles.divider} />
-        <h3 className={styles.aboutHeading}>About This Villa</h3>
-        {description.map((paragraph, index) => (
+        <h3 className={styles.aboutHeading}>{t.villa.aboutHeading}</h3>
+        {t.villa.description.map((paragraph, index) => (
           <p key={index} className={styles.aboutText}>
             {paragraph}
           </p>

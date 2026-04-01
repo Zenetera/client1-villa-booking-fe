@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { GuestInfo } from '../../../types/booking';
 import { PriceBreakdown } from '../PriceBreakdown';
 import { GuestInfoForm } from '../GuestInfoForm';
+import { useLanguage } from '../../../context/LanguageContext';
 import styles from './BookingForm.module.css';
 
 interface BookingFormProps {
@@ -15,6 +16,7 @@ export function BookingForm({
   currency = '$',
   maxGuests,
 }: BookingFormProps) {
+  const { t } = useLanguage();
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [guests, setGuests] = useState(1);
@@ -24,6 +26,7 @@ export function BookingForm({
     phone: '',
     specialRequests: '',
   });
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const handleGuestInfoChange = (field: keyof GuestInfo, value: string) => {
     setGuestInfo((prev) => ({ ...prev, [field]: value }));
@@ -31,13 +34,13 @@ export function BookingForm({
 
   return (
     <form className={styles.card} onSubmit={(e) => e.preventDefault()}>
-      <h3 className={styles.title}>Book Your Stay</h3>
+      <h3 className={styles.title}>{t.booking.title}</h3>
 
       <PriceBreakdown price={pricePerNight} currency={currency} />
 
       <div className={styles.dateRow}>
         <div className={styles.field}>
-          <label className={styles.label}>Check-in</label>
+          <label className={styles.label}>{t.booking.checkIn}</label>
           <input
             type="date"
             className={styles.input}
@@ -46,7 +49,7 @@ export function BookingForm({
           />
         </div>
         <div className={styles.field}>
-          <label className={styles.label}>Check-out</label>
+          <label className={styles.label}>{t.booking.checkOut}</label>
           <input
             type="date"
             className={styles.input}
@@ -57,7 +60,7 @@ export function BookingForm({
       </div>
 
       <div className={`${styles.field} ${styles.guestsField}`}>
-        <label className={styles.label}>Guests</label>
+        <label className={styles.label}>{t.booking.guests}</label>
         <input
           type="number"
           className={styles.input}
@@ -79,11 +82,37 @@ export function BookingForm({
       />
 
       <div className={styles.depositInfo}>
-        Deposit is <strong>10%</strong> of the total booking amount to be paid in advance. The remaining balance will be due upon check-in.
+        {t.booking.depositInfo}
       </div>
 
-      <button type="submit" className={styles.submitButton}>
-        Request Booking
+      <div className={styles.checkboxField}>
+        <label className={styles.checkboxLabel}>
+          <input
+            type="checkbox"
+            className={styles.checkbox}
+            checked={termsAccepted}
+            onChange={(e) => setTermsAccepted(e.target.checked)}
+            required
+          />
+          <span>
+            {t.booking.termsPrefix}
+            <a href="/terms" target="_blank" rel="noopener noreferrer" className={styles.termsLink}>
+              {t.booking.termsLink}
+            </a>
+            {t.booking.termsSep1}
+            <a href="/privacy" target="_blank" rel="noopener noreferrer" className={styles.termsLink}>
+              {t.booking.privacyLink}
+            </a>
+            {t.booking.termsSep2}
+            <a href="#" className={styles.termsLink}>
+              {t.booking.cancellationLink}
+            </a>
+          </span>
+        </label>
+      </div>
+
+      <button type="submit" className={styles.submitButton} disabled={!termsAccepted}>
+        {t.booking.submit}
       </button>
     </form>
   );

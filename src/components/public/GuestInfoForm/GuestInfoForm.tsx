@@ -1,4 +1,5 @@
 import type { GuestInfo } from '../../../types/booking';
+import { useLanguage } from '../../../context/LanguageContext';
 import styles from './GuestInfoForm.module.css';
 
 interface GuestInfoFormProps extends GuestInfo {
@@ -12,10 +13,12 @@ export function GuestInfoForm({
   specialRequests,
   onChange,
 }: GuestInfoFormProps) {
+  const { t } = useLanguage();
+
   return (
     <div className={styles.fieldGroup}>
       <div className={styles.field}>
-        <label className={styles.label}>Full Name</label>
+        <label className={styles.label}>{t.guestInfo.fullName}</label>
         <input
           type="text"
           className={styles.input}
@@ -25,7 +28,7 @@ export function GuestInfoForm({
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label}>Email</label>
+        <label className={styles.label}>{t.guestInfo.email}</label>
         <input
           type="email"
           className={styles.input}
@@ -35,7 +38,7 @@ export function GuestInfoForm({
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label}>Phone</label>
+        <label className={styles.label}>{t.guestInfo.phone}</label>
         <input
           type="tel"
           className={styles.input}
@@ -45,7 +48,7 @@ export function GuestInfoForm({
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label}>Special Requests</label>
+        <label className={styles.label}>{t.guestInfo.specialRequests}</label>
         <textarea
           className={styles.textarea}
           value={specialRequests}

@@ -1,4 +1,5 @@
 import { Check } from 'lucide-react';
+import { useLanguage } from '../../../context/LanguageContext';
 import styles from './AmenitiesList.module.css';
 
 interface AmenitiesListProps {
@@ -6,14 +7,16 @@ interface AmenitiesListProps {
 }
 
 export function AmenitiesList({ amenities }: AmenitiesListProps) {
+  const { t } = useLanguage();
+
   return (
     <div className={styles.section}>
-      <h3 className={styles.heading}>Amenities</h3>
+      <h3 className={styles.heading}>{t.amenities.heading}</h3>
       <div className={styles.grid}>
         {amenities.map((amenity) => (
           <div key={amenity} className={styles.item}>
             <Check size={16} className={styles.icon} />
-            <span>{amenity}</span>
+            <span>{t.amenities.items[amenity] ?? amenity}</span>
           </div>
         ))}
       </div>

@@ -65,6 +65,7 @@ function GalleryModal({ index, onClose, onPrev, onNext }: GalleryModalProps) {
 
 export function ImageGallery() {
   const [modalIndex, setModalIndex] = useState<number | null>(null);
+  const [expanded, setExpanded] = useState(false);
 
   const open = useCallback((i: number) => setModalIndex(i), []);
   const close = useCallback(() => setModalIndex(null), []);
@@ -87,13 +88,13 @@ export function ImageGallery() {
         <div className={styles.cell} onClick={() => open(2)}>
           <img src={images[2]} alt="Villa photo 3" className={styles.img} />
         </div>
-        <div className={styles.cell} onClick={() => open(3)}>
+        <div className={`${styles.cell} ${!expanded ? styles.hiddenMobile : ''}`} onClick={() => open(3)}>
           <img src={images[3]} alt="Villa photo 4" className={styles.img} />
         </div>
-        <div className={styles.cell} onClick={() => open(4)}>
+        <div className={`${styles.cell} ${!expanded ? styles.hiddenMobile : ''}`} onClick={() => open(4)}>
           <img src={images[4]} alt="Villa photo 5" className={styles.img} />
         </div>
-        <div className={`${styles.cell}${moreCount > 0 ? ` ${styles.moreCell}` : ''}`} onClick={() => open(5)}>
+        <div className={`${styles.cell}${moreCount > 0 ? ` ${styles.moreCell}` : ''} ${!expanded ? styles.hiddenMobile : ''}`} onClick={() => open(5)}>
           <img src={images[5]} alt="More villa photos" className={styles.img} />
           {moreCount > 0 && (
             <div className={styles.moreOverlay}>
@@ -103,6 +104,14 @@ export function ImageGallery() {
           )}
         </div>
       </section>
+
+      {!expanded && (
+        <div className={styles.viewMoreRow}>
+          <button className={styles.viewMoreBtn} onClick={() => setExpanded(true)}>
+            View more
+          </button>
+        </div>
+      )}
 
       {modalIndex !== null && (
         <GalleryModal
