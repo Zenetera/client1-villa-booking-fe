@@ -65,7 +65,7 @@ function GalleryModal({ index, onClose, onPrev, onNext }: GalleryModalProps) {
 
 export function ImageGallery() {
   const [modalIndex, setModalIndex] = useState<number | null>(null);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded] = useState(false);
 
   const open = useCallback((i: number) => setModalIndex(i), []);
   const close = useCallback(() => setModalIndex(null), []);
@@ -107,7 +107,7 @@ export function ImageGallery() {
 
       {!expanded && (
         <div className={styles.viewMoreRow}>
-          <button className={styles.viewMoreBtn} onClick={() => setExpanded(true)}>
+          <button className={styles.viewMoreBtn} onClick={() => open(0)}>
             View more
           </button>
         </div>
