@@ -1,27 +1,22 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { AuthContext } from '../hooks/useAuth';
-
-// Placeholder password until backend is ready
-const ADMIN_PASSWORD = 'admin123';
-const STORAGE_KEY = 'villa_admin_auth';
+import { loginApi } from '../api/auth';
+import { setToken, clearToken, getToken } from '../api/client';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(
-    () => localStorage.getItem(STORAGE_KEY) === 'true'
+    () => getToken() !== null,
   );
 
-  const login = (password: string): boolean => {
-    if (password === ADMIN_PASSWORD) {
-      localStorage.setItem(STORAGE_KEY, 'true');
-      setIsAuthenticated(true);
-      return true;
-    }
-    return false;
+  const login = async (username: string, password: string): Promise<void> => {
+    const token = await loginApi(username, password);
+    setToken(token);
+    setIsAuthenticated(true);
   };
 
   const logout = () => {
-    localStorage.removeItem(STORAGE_KEY);
+    clearToken();
     setIsAuthenticated(false);
   };
 
@@ -31,4 +26,3 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     </AuthContext.Provider>
   );
 }
-
