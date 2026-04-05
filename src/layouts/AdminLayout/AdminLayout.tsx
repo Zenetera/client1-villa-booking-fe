@@ -2,10 +2,17 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import { AdminSidebar } from '../../components/admin/AdminSidebar';
+import { LoginPage } from '../../pages/admin/LoginPage';
+import { useAuth } from '../../hooks/useAuth';
 import styles from './AdminLayout.module.css';
 
 export function AdminLayout() {
+  const { isAuthenticated } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  if (!isAuthenticated) {
+    return <LoginPage />;
+  }
 
   return (
     <div className={styles.layout}>

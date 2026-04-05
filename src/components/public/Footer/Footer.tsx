@@ -1,11 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { MoreHorizontal } from 'lucide-react';
-import { useAuth } from '../../../hooks/useAuth';
 import { useLanguage } from '../../../context/LanguageContext';
 import styles from './Footer.module.css';
 
 export function Footer() {
-  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { t } = useLanguage();
 
@@ -20,7 +18,7 @@ export function Footer() {
 
   const handleAdminClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    navigate(isAuthenticated ? '/admin' : '/admin/login');
+    navigate('/admin');
   };
 
   return (
