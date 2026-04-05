@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Calendar, Check, ChevronDown, Download, Eye } from 'lucide-react';
+import { Calendar, Check, ChevronDown, ChevronLeft, ChevronRight, Download, Eye } from 'lucide-react';
 import type { Booking, BookingStatus, PaymentStatus } from '../../../types/booking';
 import { MOCK_BOOKINGS } from '../../../mocks/data';
 import { hasConfirmedConflict } from '../../../utils/bookingOverlap';
@@ -89,12 +89,15 @@ function exportCSV(bookings: Booking[]) {
   URL.revokeObjectURL(url);
 }
 
+const ITEMS_PER_PAGE = 12;
+
 export function BookingsListPage() {
   const [bookings, setBookings] = useState<Booking[]>(MOCK_BOOKINGS);
   const [activeFilter, setActiveFilter] = useState<FilterOption>('all');
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [search, setSearch] = useState('');
   const [dateRange, setDateRange] = useState<DateRangeKey>('30d');
+  const [currentPage, setCurrentPage] = useState(1);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [exportOpen, setExportOpen] = useState(false);
@@ -163,6 +166,12 @@ export function BookingsListPage() {
       const q = search.toLowerCase();
       return !q || b.guestName.toLowerCase().includes(q) || b.referenceCode.toLowerCase().includes(q);
     });
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const safeCurrentPage = Math.min(currentPage, Math.max(1, totalPages));
+  const paginatedStart = (safeCurrentPage - 1) * ITEMS_PER_PAGE;
+  const paginated = filtered.slice(paginatedStart, paginatedStart + ITEMS_PER_PAGE);
+
 
   const filters: { key: FilterOption; label: string; count?: number }[] = [
     { key: 'all', label: 'All', count: bookings.length },
@@ -257,7 +266,7 @@ export function BookingsListPage() {
                   <button
                     key={opt.key}
                     className={`${styles.dropdownItem} ${dateRange === opt.key ? styles.dropdownItemActive : ''}`}
-                    onClick={() => { setDateRange(opt.key); setDropdownOpen(false); }}
+                    onClick={() => { setDateRange(opt.key); setCurrentPage(1); setDropdownOpen(false); }}
                   >
                     {opt.label}
                   </button>
@@ -408,7 +417,7 @@ export function BookingsListPage() {
           className={styles.searchInput}
           placeholder="Search guest or ref..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
         />
         <div className={styles.statusDropdownWrapper} ref={statusDropdownRef}>
           <button
@@ -425,7 +434,7 @@ export function BookingsListPage() {
                 <button
                   key={f.key}
                   className={`${styles.dropdownItem} ${activeFilter === f.key ? styles.dropdownItemActive : ''}`}
-                  onClick={() => { setActiveFilter(f.key); setStatusDropdownOpen(false); }}
+                  onClick={() => { setActiveFilter(f.key); setCurrentPage(1); setStatusDropdownOpen(false); }}
                 >
                   {f.label}
                   {f.count !== undefined && <span className={styles.statusItemCount}>{f.count}</span>}
@@ -463,7 +472,7 @@ export function BookingsListPage() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((booking) => (
+            {paginated.map((booking) => (
               <tr key={booking.referenceCode} onClick={() => setSelectedBooking(booking)}>
                 <td>
                   <span className={styles.refCode}>{booking.referenceCode}</span>
@@ -558,7 +567,7 @@ export function BookingsListPage() {
 
       {/* Mobile card layout */}
       <div className={styles.mobileCards}>
-        {filtered.map((booking) => (
+        {paginated.map((booking) => (
           <div
             key={booking.referenceCode}
             className={styles.card}
@@ -663,6 +672,39 @@ export function BookingsListPage() {
           </div>
         ))}
       </div>
+
+      {totalPages > 1 && (
+        <div className={styles.pagination}>
+          <span className={styles.paginationInfo}>
+            {paginatedStart + 1}–{Math.min(paginatedStart + ITEMS_PER_PAGE, filtered.length)} of {filtered.length}
+          </span>
+          <div className={styles.paginationControls}>
+            <button
+              className={styles.paginationBtn}
+              disabled={safeCurrentPage <= 1}
+              onClick={() => setCurrentPage((p) => p - 1)}
+            >
+              <ChevronLeft size={14} />
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                className={`${styles.paginationBtn} ${page === safeCurrentPage ? styles.paginationBtnActive : ''}`}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </button>
+            ))}
+            <button
+              className={styles.paginationBtn}
+              disabled={safeCurrentPage >= totalPages}
+              onClick={() => setCurrentPage((p) => p + 1)}
+            >
+              <ChevronRight size={14} />
+            </button>
+          </div>
+        </div>
+      )}
 
       {selectedBooking && (
         <BookingDetailModal
