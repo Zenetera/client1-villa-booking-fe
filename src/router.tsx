@@ -4,7 +4,6 @@ import { AdminLayout } from './layouts/AdminLayout';
 import { HomePage } from './pages/public/HomePage/HomePage';
 import { TermsPage } from './pages/public/TermsPage';
 import { PrivacyPage } from './pages/public/PrivacyPage';
-import { LoginPage } from './pages/admin/LoginPage';
 import { BookingsListPage } from './pages/admin/BookingsListPage';
 import { BlockedDatesPage } from './pages/admin/BlockedDatesPage';
 import { VillaEditorPage } from './pages/admin/VillaEditorPage';
@@ -12,7 +11,6 @@ import { ImageManagerPage } from './pages/admin/ImageManagerPage';
 import { ContactInfoPage } from './pages/admin/ContactInfoPage';
 import { TermsEditorPage } from './pages/admin/TermsEditorPage';
 import { PrivacyEditorPage } from './pages/admin/PrivacyEditorPage';
-import { ProtectedRoute, GuestOnlyRoute } from './components/auth/AuthGuards';
 
 export const router = createBrowserRouter([
   {
@@ -39,67 +37,31 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: (
-          <ProtectedRoute>
-            <BookingsListPage />
-          </ProtectedRoute>
-        ),
+        element: <BookingsListPage />,
       },
       {
         path: 'calendar',
-        element: (
-          <ProtectedRoute>
-            <BlockedDatesPage />
-          </ProtectedRoute>
-        ),
+        element: <BlockedDatesPage />,
       },
       {
         path: 'villa',
-        element: (
-          <ProtectedRoute>
-            <VillaEditorPage />
-          </ProtectedRoute>
-        ),
+        element: <VillaEditorPage />,
       },
       {
         path: 'images',
-        element: (
-          <ProtectedRoute>
-            <ImageManagerPage />
-          </ProtectedRoute>
-        ),
+        element: <ImageManagerPage />,
       },
       {
         path: 'contact',
-        element: (
-          <ProtectedRoute>
-            <ContactInfoPage />
-          </ProtectedRoute>
-        ),
+        element: <ContactInfoPage />,
       },
       {
         path: 'terms',
-        element: (
-          <ProtectedRoute>
-            <TermsEditorPage />
-          </ProtectedRoute>
-        ),
+        element: <TermsEditorPage />,
       },
       {
         path: 'privacy',
-        element: (
-          <ProtectedRoute>
-            <PrivacyEditorPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: 'login',
-        element: (
-          <GuestOnlyRoute>
-            <LoginPage />
-          </GuestOnlyRoute>
-        ),
+        element: <PrivacyEditorPage />,
       },
     ],
   },
