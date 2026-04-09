@@ -2,6 +2,14 @@ import { api } from './client';
 import type { Villa } from '../types/villa';
 import type { Lang } from '../i18n/translations';
 
+interface VillaApiImage {
+  id: number;
+  imageUrl: string;
+  altText: string;
+  displayOrder: number;
+  isHero: boolean;
+}
+
 interface VillaApiResponse {
   data: {
     id: number;
@@ -21,6 +29,7 @@ interface VillaApiResponse {
     houseRulesEn: string | null;
     houseRulesEl: string | null;
     address: string;
+    images?: VillaApiImage[];
     [key: string]: unknown;
   };
 }
@@ -75,6 +84,12 @@ export async function fetchVilla(lang: Lang = 'en'): Promise<Villa> {
     houseRules: (isEl && v.houseRulesEl) || v.houseRulesEn,
     checkInTime: (v.checkInTime as string) || '15:00',
     checkOutTime: (v.checkOutTime as string) || '11:00',
+    images: (v.images || []).map((img) => ({
+      id: img.id,
+      url: img.imageUrl,
+      alt: img.altText,
+      isHero: img.isHero,
+    })),
   };
 }
 

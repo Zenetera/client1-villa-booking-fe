@@ -1,3 +1,10 @@
+export interface VillaImage {
+  id: number;
+  url: string;
+  alt: string;
+  isHero: boolean;
+}
+
 export interface Villa {
   id: string;
   name: string;
@@ -15,4 +22,5 @@ export interface Villa {
   houseRules: string | null;
   checkInTime: string;
   checkOutTime: string;
+  images: VillaImage[];
 }

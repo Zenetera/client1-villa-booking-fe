@@ -1,20 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import type { VillaImage } from '../../../types/villa';
 import styles from './ImageGallery.module.css';
 
-const imageModules = import.meta.glob('../../../assets/IMG_*.JPG', { eager: true }) as Record<string, { default: string }>;
-const images: string[] = Object.entries(imageModules)
-  .sort(([a], [b]) => a.localeCompare(b))
-  .map(([, m]) => m.default);
-
 interface GalleryModalProps {
+  images: VillaImage[];
   index: number;
   onClose: () => void;
   onPrev: () => void;
   onNext: () => void;
 }
 
-function GalleryModal({ index, onClose, onPrev, onNext }: GalleryModalProps) {
+function GalleryModal({ images, index, onClose, onPrev, onNext }: GalleryModalProps) {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -45,8 +42,8 @@ function GalleryModal({ index, onClose, onPrev, onNext }: GalleryModalProps) {
         <div className={styles.imageFrame}>
           <img
             key={index}
-            src={images[index]}
-            alt={`Villa photo ${index + 1}`}
+            src={images[index].url}
+            alt={images[index].alt || `Villa photo ${index + 1}`}
             className={styles.modalImage}
           />
         </div>
@@ -63,14 +60,18 @@ function GalleryModal({ index, onClose, onPrev, onNext }: GalleryModalProps) {
   );
 }
 
-export function ImageGallery() {
+interface ImageGalleryProps {
+  images: VillaImage[];
+}
+
+export function ImageGallery({ images }: ImageGalleryProps) {
   const [modalIndex, setModalIndex] = useState<number | null>(null);
   const [expanded] = useState(false);
 
   const open = useCallback((i: number) => setModalIndex(i), []);
   const close = useCallback(() => setModalIndex(null), []);
-  const prev = useCallback(() => setModalIndex(i => i === null ? null : (i - 1 + images.length) % images.length), []);
-  const next = useCallback(() => setModalIndex(i => i === null ? null : (i + 1) % images.length), []);
+  const prev = useCallback(() => setModalIndex(i => i === null ? null : (i - 1 + images.length) % images.length), [images.length]);
+  const next = useCallback(() => setModalIndex(i => i === null ? null : (i + 1) % images.length), [images.length]);
 
   if (images.length < 6) return null;
 
@@ -80,22 +81,22 @@ export function ImageGallery() {
     <>
       <section id='gallery' className={styles.gallery}>
         <div className={`${styles.cell} ${styles.cellLarge}`} onClick={() => open(0)}>
-          <img src={images[0]} alt="Villa photo 1" className={styles.img} />
+          <img src={images[0].url} alt={images[0].alt || 'Villa photo 1'} className={styles.img} />
         </div>
         <div className={styles.cell} onClick={() => open(1)}>
-          <img src={images[1]} alt="Villa photo 2" className={styles.img} />
+          <img src={images[1].url} alt={images[1].alt || 'Villa photo 2'} className={styles.img} />
         </div>
         <div className={styles.cell} onClick={() => open(2)}>
-          <img src={images[2]} alt="Villa photo 3" className={styles.img} />
+          <img src={images[2].url} alt={images[2].alt || 'Villa photo 3'} className={styles.img} />
         </div>
         <div className={`${styles.cell} ${!expanded ? styles.hiddenMobile : ''}`} onClick={() => open(3)}>
-          <img src={images[3]} alt="Villa photo 4" className={styles.img} />
+          <img src={images[3].url} alt={images[3].alt || 'Villa photo 4'} className={styles.img} />
         </div>
         <div className={`${styles.cell} ${!expanded ? styles.hiddenMobile : ''}`} onClick={() => open(4)}>
-          <img src={images[4]} alt="Villa photo 5" className={styles.img} />
+          <img src={images[4].url} alt={images[4].alt || 'Villa photo 5'} className={styles.img} />
         </div>
         <div className={`${styles.cell}${moreCount > 0 ? ` ${styles.moreCell}` : ''} ${!expanded ? styles.hiddenMobile : ''}`} onClick={() => open(5)}>
-          <img src={images[5]} alt="More villa photos" className={styles.img} />
+          <img src={images[5].url} alt={images[5].alt || 'More villa photos'} className={styles.img} />
           {moreCount > 0 && (
             <div className={styles.moreOverlay}>
               <span className={styles.moreCount}>+{moreCount}</span>
@@ -115,6 +116,7 @@ export function ImageGallery() {
 
       {modalIndex !== null && (
         <GalleryModal
+          images={images}
           index={modalIndex}
           onClose={close}
           onPrev={prev}

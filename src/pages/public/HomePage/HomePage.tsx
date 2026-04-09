@@ -29,9 +29,11 @@ export function HomePage() {
     return () => { cancelled = true; };
   }, [lang]);
 
+  const heroImage = villa?.images.find((img) => img.isHero);
+
   return (
     <>
-      <HeroSection />
+      <HeroSection heroImageUrl={heroImage?.url} />
       <SectionIntro eyebrow={t.home.retreatEyebrow} heading={t.home.retreatHeading} />
       {error ? (
         <p className={styles.errorText}>Unable to load villa details.</p>
@@ -42,7 +44,7 @@ export function HomePage() {
       )}
       <div className={styles.gallerySection}>
         <SectionIntro eyebrow={t.home.galleryEyebrow} heading={t.home.galleryHeading} />
-        <ImageGallery />
+        <ImageGallery images={villa?.images ?? []} />
       </div>
       <SectionIntro eyebrow={t.home.locationEyebrow} heading={t.home.locationHeading} />
       <LocationMap />
