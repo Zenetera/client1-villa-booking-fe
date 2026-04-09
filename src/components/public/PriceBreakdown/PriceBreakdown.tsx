@@ -6,12 +6,14 @@ interface PriceBreakdownProps {
   price: number;
   quote?: PricingQuote | null;
   loading?: boolean;
+  error?: boolean;
 }
 
 export function PriceBreakdown({
   price,
   quote,
   loading,
+  error,
 }: PriceBreakdownProps) {
   const { t } = useLanguage();
 
@@ -19,6 +21,14 @@ export function PriceBreakdown({
     return (
       <div className={styles.wrapper}>
         <p className={styles.loadingText}>{t.price.loading}</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.wrapper}>
+        <p className={styles.errorText}>{t.price.error}</p>
       </div>
     );
   }

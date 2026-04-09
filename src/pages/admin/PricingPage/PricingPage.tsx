@@ -190,6 +190,7 @@ export function PricingPage() {
 
   async function handleDeleteRule(id: number) {
     try {
+      setRulesError('');
       await deletePricingRule(id);
       setRules((prev) => prev.filter((r) => r.id !== id));
     } catch {

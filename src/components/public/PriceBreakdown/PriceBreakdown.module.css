@@ -28,6 +28,14 @@
   margin: 0;
 }
 
+/* Error state */
+.errorText {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--destructive, #b91c1c);
+  margin: 0;
+}
+
 /* Nightly breakdown */
 .nightsList {
   display: flex;

@@ -72,6 +72,7 @@ export const en = {
     touristTax: 'Tourist tax',
     total: 'Total',
     loading: 'Calculating price\u2026',
+    error: 'Unable to calculate price. Please try different dates.',
   },
   contact: {
     formHeading: 'Send a Message',
@@ -179,6 +180,7 @@ export const el = {
     touristTax: 'Τουριστικός φόρος',
     total: 'Σύνολο',
     loading: 'Υπολογισμός τιμής\u2026',
+    error: 'Δεν ήταν δυνατός ο υπολογισμός της τιμής. Δοκιμάστε διαφορετικές ημερομηνίες.',
   },
   contact: {
     formHeading: 'Στείλτε Μήνυμα',

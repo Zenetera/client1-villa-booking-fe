@@ -30,11 +30,13 @@ export function BookingForm({
   const [fetchResult, setFetchResult] = useState<{
     key: string;
     quote: PricingQuote | null;
+    error: boolean;
   } | null>(null);
 
   const hasValidDates = !!checkIn && !!checkOut && checkOut > checkIn;
   const dateKey = hasValidDates ? `${checkIn}_${checkOut}` : '';
   const pricingQuote = fetchResult?.key === dateKey ? fetchResult.quote : null;
+  const pricingError = fetchResult?.key === dateKey ? !!fetchResult.error : false;
   const pricingLoading = hasValidDates && fetchResult?.key !== dateKey;
 
   useEffect(() => {
@@ -44,10 +46,10 @@ export function BookingForm({
 
     fetchPricingQuote(checkIn, checkOut)
       .then((quote) => {
-        if (!cancelled) setFetchResult({ key: dateKey, quote });
+        if (!cancelled) setFetchResult({ key: dateKey, quote, error: false });
       })
       .catch(() => {
-        if (!cancelled) setFetchResult({ key: dateKey, quote: null });
+        if (!cancelled) setFetchResult({ key: dateKey, quote: null, error: true });
       });
 
     return () => { cancelled = true; };
@@ -65,6 +67,7 @@ export function BookingForm({
         price={pricePerNight}
         quote={pricingQuote}
         loading={pricingLoading}
+        error={pricingError}
       />
 
       <div className={styles.dateRow}>
