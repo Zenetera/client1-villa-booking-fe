@@ -154,35 +154,6 @@ export function VillaEditorPage() {
           </div>
         )}
 
-        {editLang === 'en' && (
-          <div className={styles.card}>
-            <h2 className={styles.sectionTitle}>Pricing</h2>
-
-            <div className={styles.fieldRow}>
-              <div className={styles.field}>
-                <label className={styles.label}>Price Per Night</label>
-                <div className={styles.inputWithPrefix}>
-                  <span className={styles.inputPrefix}>&euro;</span>
-                  <input
-                    type="number"
-                    className={styles.input}
-                    defaultValue={850}
-                    min={0}
-                  />
-                </div>
-              </div>
-              <div className={styles.field}>
-                <label className={styles.label}>Currency</label>
-                <select className={styles.input} defaultValue="EUR">
-                  <option value="EUR">EUR</option>
-                  <option value="USD">USD</option>
-                  <option value="GBP">GBP</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        )}
-
         <div className={styles.card}>
           <h2 className={styles.sectionTitle}>Amenities</h2>
           <p className={styles.fieldHint}>

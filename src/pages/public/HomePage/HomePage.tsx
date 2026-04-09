@@ -1,4 +1,7 @@
+import { useEffect, useState } from 'react';
 import { MOCK_VILLA } from '../../../mocks/villa';
+import { fetchVilla } from '../../../api/villa';
+import type { Villa } from '../../../types/villa';
 import { HeroSection } from '../../../components/public/HeroSection';
 import { SectionIntro } from '../../../components/public/SectionIntro';
 import { VillaDetails } from '../../../components/public/VillaDetails';
@@ -9,12 +12,19 @@ import styles from './HomePage.module.css';
 
 export function HomePage() {
   const { t } = useLanguage();
+  const [villa, setVilla] = useState<Villa>(MOCK_VILLA);
+
+  useEffect(() => {
+    fetchVilla()
+      .then(setVilla)
+      .catch(() => {/* fall back to MOCK_VILLA */});
+  }, []);
 
   return (
     <>
       <HeroSection />
       <SectionIntro eyebrow={t.home.retreatEyebrow} heading={t.home.retreatHeading} />
-      <VillaDetails villa={MOCK_VILLA} />
+      <VillaDetails villa={villa} />
       <div className={styles.gallerySection}>
         <SectionIntro eyebrow={t.home.galleryEyebrow} heading={t.home.galleryHeading} />
         <ImageGallery />

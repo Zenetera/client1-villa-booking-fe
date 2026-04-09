@@ -10,6 +10,7 @@ import { VillaEditorPage } from './pages/admin/VillaEditorPage';
 import { ImageManagerPage } from './pages/admin/ImageManagerPage';
 import { ContactInfoPage } from './pages/admin/ContactInfoPage';
 import { TermsEditorPage } from './pages/admin/TermsEditorPage';
+import { PricingPage } from './pages/admin/PricingPage';
 import { PrivacyEditorPage } from './pages/admin/PrivacyEditorPage';
 
 export const router = createBrowserRouter([
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
       {
         path: 'villa',
         element: <VillaEditorPage />,
+      },
+      {
+        path: 'pricing',
+        element: <PricingPage />,
       },
       {
         path: 'images',

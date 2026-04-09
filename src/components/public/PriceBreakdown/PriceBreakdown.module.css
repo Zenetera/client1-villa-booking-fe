@@ -19,3 +19,78 @@
   font-weight: 400;
   color: var(--muted-foreground);
 }
+
+/* Loading state */
+.loadingText {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+/* Error state */
+.errorText {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--destructive, #b91c1c);
+  margin: 0;
+}
+
+/* Nightly breakdown */
+.nightsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nightRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+
+.nightLabel {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.nightAmount {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ruleBadge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--primary);
+  background-color: rgba(171, 103, 43, 0.1);
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+}
+
+/* Divider */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0.75rem 0;
+}
+
+/* Summary rows */
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--foreground);
+  padding: 0.15rem 0;
+}
+
+.totalRow {
+  font-weight: 600;
+  font-size: 1rem;
+}

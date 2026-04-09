@@ -11,7 +11,7 @@ interface VillaDetailsProps {
 
 export function VillaDetails({ villa }: VillaDetailsProps) {
   const { t } = useLanguage();
-  const { name, location, bedrooms, bathrooms, maxGuests, amenities, pricePerNight, currency } = villa;
+  const { name, location, bedrooms, bathrooms, maxGuests, amenities, pricePerNight } = villa;
 
   return (
     <section id='booking' className={styles.section}>
@@ -54,7 +54,6 @@ export function VillaDetails({ villa }: VillaDetailsProps) {
       {/* Right column – booking card */}
       <BookingForm
         pricePerNight={pricePerNight}
-        currency={currency}
         maxGuests={maxGuests}
       />
     </section>

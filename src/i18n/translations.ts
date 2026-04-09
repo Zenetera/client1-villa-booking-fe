@@ -66,6 +66,13 @@ export const en = {
   },
   price: {
     night: 'night',
+    nights: 'nights',
+    from: 'From',
+    accommodation: 'Accommodation',
+    touristTax: 'Tourist tax',
+    total: 'Total',
+    loading: 'Calculating price\u2026',
+    error: 'Unable to calculate price. Please try different dates.',
   },
   contact: {
     formHeading: 'Send a Message',
@@ -167,6 +174,13 @@ export const el = {
   },
   price: {
     night: 'νύχτα',
+    nights: 'νύχτες',
+    from: 'Από',
+    accommodation: 'Διαμονή',
+    touristTax: 'Τουριστικός φόρος',
+    total: 'Σύνολο',
+    loading: 'Υπολογισμός τιμής\u2026',
+    error: 'Δεν ήταν δυνατός ο υπολογισμός της τιμής. Δοκιμάστε διαφορετικές ημερομηνίες.',
   },
   contact: {
     formHeading: 'Στείλτε Μήνυμα',
