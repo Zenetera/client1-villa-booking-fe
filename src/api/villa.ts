@@ -45,6 +45,11 @@ interface PricingQuoteResponse {
   data: PricingQuote;
 }
 
+function parseNullableFloat(value: unknown): number | null {
+  const parsed = parseFloat(String(value));
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 export async function fetchVilla(lang: Lang = 'en'): Promise<Villa> {
   const res = await api<VillaApiResponse>('/api/villa');
   const v = res.data;
@@ -55,6 +60,8 @@ export async function fetchVilla(lang: Lang = 'en'): Promise<Villa> {
     id: String(v.id),
     name: (isEl && v.nameEl) || v.nameEn,
     location: v.address,
+    latitude: v.latitude != null ? parseNullableFloat(v.latitude) : null,
+    longitude: v.longitude != null ? parseNullableFloat(v.longitude) : null,
     tagline: (isEl && v.shortDescriptionEl) || v.shortDescriptionEn,
     bedrooms: v.bedrooms,
     bathrooms: v.bathrooms,
@@ -66,7 +73,30 @@ export async function fetchVilla(lang: Lang = 'en'): Promise<Villa> {
       .filter(Boolean),
     amenities: (isEl && v.amenitiesEl) || v.amenitiesEn || [],
     houseRules: (isEl && v.houseRulesEl) || v.houseRulesEn,
+    checkInTime: (v.checkInTime as string) || '15:00',
+    checkOutTime: (v.checkOutTime as string) || '11:00',
   };
+}
+
+export interface PublicContactInfo {
+  ownerDisplayName: string;
+  email: string;
+  phone: string | null;
+  whatsapp: string | null;
+  streetAddress: string;
+  city: string;
+  region: string | null;
+  postalCode: string;
+  country: string;
+}
+
+interface PublicContactInfoResponse {
+  data: PublicContactInfo;
+}
+
+export async function fetchPublicContactInfo(): Promise<PublicContactInfo> {
+  const res = await api<PublicContactInfoResponse>('/api/villa/contact');
+  return res.data;
 }
 
 export async function fetchPricingQuote(

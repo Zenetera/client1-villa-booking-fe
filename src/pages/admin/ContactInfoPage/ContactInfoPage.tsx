@@ -1,46 +1,120 @@
-import { useState } from 'react';
-import { LangTabs } from '../../../components/admin/LangTabs';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { fetchContactInfo, updateContactInfo } from '../../../api/admin';
+import type { ContactInfo, UpdateContactInput } from '../../../api/admin';
 import styles from './ContactInfoPage.module.css';
 
-type EditLang = 'en' | 'el';
-
-interface ContactText {
-  displayName: string;
-  street: string;
-  city: string;
-  region: string;
-  country: string;
+interface ContactFormState {
+  ownerFullName: string;
+  ownerDisplayName: string;
+  email: string;
+  phone: string;
+  whatsapp: string;
 }
 
-const DEFAULTS: Record<EditLang, ContactText> = {
-  en: {
-    displayName: 'Marco',
-    street: 'Via Cristoforo Colombo, 15',
-    city: 'Positano',
-    region: 'Salerno (SA)',
-    country: 'Italy',
-  },
-  el: {
-    displayName: 'Μάρκο',
-    street: 'Via Cristoforo Colombo, 15',
-    city: 'Ποζιτάνο',
-    region: 'Σαλέρνο (SA)',
-    country: 'Ιταλία',
-  },
-};
+function contactToForm(c: ContactInfo): ContactFormState {
+  return {
+    ownerFullName: c.ownerFullName,
+    ownerDisplayName: c.ownerDisplayName,
+    email: c.email,
+    phone: c.phone ?? '',
+    whatsapp: c.whatsapp ?? '',
+  };
+}
+
+function formToPayload(form: ContactFormState, c: ContactInfo): UpdateContactInput {
+  return {
+    ownerFullName: form.ownerFullName,
+    ownerDisplayName: form.ownerDisplayName,
+    email: form.email,
+    phone: form.phone || null,
+    whatsapp: form.whatsapp || null,
+    streetAddress: c.streetAddress,
+    city: c.city,
+    region: c.region,
+    postalCode: c.postalCode,
+    country: c.country,
+  };
+}
 
 export function ContactInfoPage() {
-  const [editLang, setEditLang] = useState<EditLang>('en');
-  const [texts, setTexts] = useState<Record<EditLang, ContactText>>(DEFAULTS);
+  const [form, setForm] = useState<ContactFormState | null>(null);
+  const [savedForm, setSavedForm] = useState<ContactFormState | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const contactRef = useRef<ContactInfo | null>(null);
 
-  const current = texts[editLang];
+  const load = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const contact = await fetchContactInfo();
+      contactRef.current = contact;
+      const state = contactToForm(contact);
+      setForm(state);
+      setSavedForm(state);
+    } catch {
+      setError('Failed to load contact information');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const update = (field: keyof ContactText, value: string) => {
-    setTexts((prev) => ({
-      ...prev,
-      [editLang]: { ...prev[editLang], [field]: value },
-    }));
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <p className={styles.loadingText}>Loading contact information...</p>
+      </div>
+    );
+  }
+
+  if (!form) {
+    return (
+      <div className={styles.page}>
+        <p className={styles.errorMsg}>{error || 'Contact info not found'}</p>
+      </div>
+    );
+  }
+
+  const update = (field: keyof ContactFormState, value: string) => {
+    setForm((prev) => (prev ? { ...prev, [field]: value } : prev));
   };
+
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form) return;
+
+    setError('');
+    setSuccess('');
+    setSaving(true);
+
+    try {
+      const contact = await updateContactInfo(formToPayload(form, contactRef.current!));
+      contactRef.current = contact;
+      const state = contactToForm(contact);
+      setForm(state);
+      setSavedForm(state);
+      setSuccess('Contact information saved');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function handleDiscard() {
+    if (savedForm) {
+      setForm(savedForm);
+    }
+    setError('');
+    setSuccess('');
+  }
 
   return (
     <div className={styles.page}>
@@ -49,137 +123,91 @@ export function ContactInfoPage() {
           <h1 className={styles.title}>Contact Information</h1>
           <p className={styles.subtitle}>Manage how guests can reach you</p>
         </div>
-        <LangTabs value={editLang} onChange={setEditLang} />
       </div>
 
-      <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
+      <form className={styles.form} onSubmit={handleSave}>
         <div className={styles.card}>
           <h2 className={styles.sectionTitle}>Owner Details</h2>
 
           <div className={styles.fieldRow}>
-            {editLang === 'en' && (
-              <div className={styles.field}>
-                <label className={styles.label}>Full Name</label>
-                <input
-                  type="text"
-                  className={styles.input}
-                  defaultValue="Marco Rossi"
-                />
-              </div>
-            )}
             <div className={styles.field}>
-              <label className={styles.label}>Display Name</label>
+              <label className={styles.label} htmlFor="owner-full-name">Full Name</label>
               <input
+                id="owner-full-name"
                 type="text"
                 className={styles.input}
-                value={current.displayName}
-                onChange={(e) => update('displayName', e.target.value)}
+                value={form.ownerFullName}
+                onChange={(e) => update('ownerFullName', e.target.value)}
+              />
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="owner-display-name">Display Name</label>
+              <input
+                id="owner-display-name"
+                type="text"
+                className={styles.input}
+                value={form.ownerDisplayName}
+                onChange={(e) => update('ownerDisplayName', e.target.value)}
                 placeholder="Shown to guests"
               />
             </div>
           </div>
         </div>
 
-        {editLang === 'en' && (
-          <div className={styles.card}>
-            <h2 className={styles.sectionTitle}>Contact Methods</h2>
-
-            <div className={styles.field}>
-              <label className={styles.label}>Email Address</label>
-              <input
-                type="email"
-                className={styles.input}
-                defaultValue="contact@sunsetvilla.com"
-              />
-              <span className={styles.fieldHint}>
-                Used for booking confirmations and guest correspondence
-              </span>
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label}>Phone Number</label>
-              <input
-                type="tel"
-                className={styles.input}
-                defaultValue="+39 089 123 4567"
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label}>WhatsApp</label>
-              <input
-                type="tel"
-                className={styles.input}
-                defaultValue="+39 333 456 7890"
-                placeholder="Optional"
-              />
-            </div>
-          </div>
-        )}
-
         <div className={styles.card}>
-          <h2 className={styles.sectionTitle}>Property Address</h2>
+          <h2 className={styles.sectionTitle}>Contact Methods</h2>
 
           <div className={styles.field}>
-            <label className={styles.label}>Street Address</label>
+            <label className={styles.label} htmlFor="contact-email">Email Address</label>
             <input
-              type="text"
+              id="contact-email"
+              type="email"
               className={styles.input}
-              value={current.street}
-              onChange={(e) => update('street', e.target.value)}
+              value={form.email}
+              onChange={(e) => update('email', e.target.value)}
             />
+            <span className={styles.fieldHint}>
+              Used for booking confirmations and guest correspondence
+            </span>
           </div>
 
           <div className={styles.fieldRow}>
             <div className={styles.field}>
-              <label className={styles.label}>City</label>
+              <label className={styles.label} htmlFor="contact-phone">Phone Number</label>
               <input
-                type="text"
+                id="contact-phone"
+                type="tel"
                 className={styles.input}
-                value={current.city}
-                onChange={(e) => update('city', e.target.value)}
+                value={form.phone}
+                onChange={(e) => update('phone', e.target.value)}
+                placeholder="Optional"
               />
             </div>
             <div className={styles.field}>
-              <label className={styles.label}>Region / Province</label>
+              <label className={styles.label} htmlFor="contact-whatsapp">WhatsApp</label>
               <input
-                type="text"
+                id="contact-whatsapp"
+                type="tel"
                 className={styles.input}
-                value={current.region}
-                onChange={(e) => update('region', e.target.value)}
+                value={form.whatsapp}
+                onChange={(e) => update('whatsapp', e.target.value)}
+                placeholder="Optional"
               />
             </div>
-            {editLang === 'en' && (
-              <div className={styles.field}>
-                <label className={styles.label}>Postal Code</label>
-                <input
-                  type="text"
-                  className={styles.input}
-                  defaultValue="84017"
-                />
-              </div>
-            )}
-          </div>
-
-          <div className={styles.field}>
-            <label className={styles.label}>Country</label>
-            <input
-              type="text"
-              className={styles.input}
-              value={current.country}
-              onChange={(e) => update('country', e.target.value)}
-            />
           </div>
         </div>
 
+        {error && <p className={styles.errorMsg}>{error}</p>}
+        {success && <p className={styles.successMsg}>{success}</p>}
+
         <div className={styles.actions}>
-          <button type="submit" className={styles.saveButton}>
-            Save Changes
+          <button type="submit" className={styles.saveButton} disabled={saving}>
+            {saving ? 'Saving...' : 'Save Changes'}
           </button>
           <button
             type="button"
             className={styles.cancelButton}
-            onClick={() => setTexts((prev) => ({ ...prev, [editLang]: DEFAULTS[editLang] }))}
+            onClick={handleDiscard}
           >
             Discard
           </button>

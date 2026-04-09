@@ -1,22 +1,62 @@
+import { useEffect, useState } from 'react';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { useLanguage } from '../../../context/LanguageContext';
+import { fetchPublicContactInfo, fetchVilla } from '../../../api/villa';
+import type { PublicContactInfo } from '../../../api/villa';
 import styles from './LocationMap.module.css';
 
+function formatTime(time24: string): string {
+  const [h, m] = time24.split(':').map(Number);
+  const suffix = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 || 12;
+  return `${h12}:${m.toString().padStart(2, '0')} ${suffix}`;
+}
+
 export function LocationMap() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const [contact, setContact] = useState<PublicContactInfo | null>(null);
+  const [checkIn, setCheckIn] = useState<string | null>(null);
+  const [checkOut, setCheckOut] = useState<string | null>(null);
+  const [mapSrc, setMapSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchPublicContactInfo()
+      .then(setContact)
+      .catch(() => {});
+    fetchVilla(lang)
+      .then((villa) => {
+        setCheckIn(villa.checkInTime);
+        setCheckOut(villa.checkOutTime);
+        if (villa.latitude != null && villa.longitude != null) {
+          const q = encodeURIComponent(`${villa.latitude},${villa.longitude}`);
+          setMapSrc(`https://maps.google.com/maps?q=${q}&z=15&output=embed`);
+        }
+      })
+      .catch(() => {});
+  }, [lang]);
+
+  const addressLines = contact
+    ? [
+        contact.streetAddress,
+        [contact.city, contact.region, contact.postalCode].filter(Boolean).join(', '),
+        contact.country,
+      ].filter(Boolean)
+    : [];
 
   return (
     <section className={styles.section}>
       <div className={styles.topRow}>
         <div id="location" className={styles.mapWrapper}>
-          <iframe
-            className={styles.map}
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d48456.85488425492!2d14.560055!3d40.633333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x133b975f6cfae565%3A0xc8ddf8e0b8e5e1d0!2sAmalfi%20Coast!5e0!3m2!1sen!2sit!4v1700000000000"
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title={t.contact.mapTitle}
-          />
+          {mapSrc && (
+            <iframe
+              className={styles.map}
+              src={mapSrc}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title={t.contact.mapTitle}
+            />
+          )}
         </div>
 
         <div id="contact" className={styles.rightCol}>
@@ -66,52 +106,63 @@ export function LocationMap() {
       </div>
 
       <div className={styles.bottomRow}>
-        <div className={styles.infoBlock}>
-          <div className={styles.iconWrapper}>
-            <MapPin size={20} />
+        {addressLines.length > 0 && (
+          <div className={styles.infoBlock}>
+            <div className={styles.iconWrapper}>
+              <MapPin size={20} />
+            </div>
+            <div>
+              <h3 className={styles.infoTitle}>{t.contact.addressTitle}</h3>
+              <p className={styles.infoText}>
+                {addressLines.map((line, i) => (
+                  <span key={i}>
+                    {line}
+                    {i < addressLines.length - 1 && <br />}
+                  </span>
+                ))}
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className={styles.infoTitle}>{t.contact.addressTitle}</h3>
-            <p className={styles.infoText}>
-              Via Marina Grande, 12<br />
-              Amalfi, SA 84011<br />
-              Amalfi Coast, Italy
-            </p>
-          </div>
-        </div>
+        )}
 
-        <div className={styles.infoBlock}>
-          <div className={styles.iconWrapper}>
-            <Phone size={20} />
+        {contact?.phone && (
+          <div className={styles.infoBlock}>
+            <div className={styles.iconWrapper}>
+              <Phone size={20} />
+            </div>
+            <div>
+              <h3 className={styles.infoTitle}>{t.contact.phoneTitle}</h3>
+              <p className={styles.infoText}>{contact.phone}</p>
+            </div>
           </div>
-          <div>
-            <h3 className={styles.infoTitle}>{t.contact.phoneTitle}</h3>
-            <p className={styles.infoText}>+39 089 871 234</p>
-          </div>
-        </div>
+        )}
 
-        <div className={styles.infoBlock}>
-          <div className={styles.iconWrapper}>
-            <Mail size={20} />
+        {contact?.email && (
+          <div className={styles.infoBlock}>
+            <div className={styles.iconWrapper}>
+              <Mail size={20} />
+            </div>
+            <div>
+              <h3 className={styles.infoTitle}>{t.contact.emailTitle}</h3>
+              <p className={styles.infoText}>{contact.email}</p>
+            </div>
           </div>
-          <div>
-            <h3 className={styles.infoTitle}>{t.contact.emailTitle}</h3>
-            <p className={styles.infoText}>contact@villahaven.com</p>
-          </div>
-        </div>
+        )}
 
-        <div className={styles.infoBlock}>
-          <div className={styles.iconWrapper}>
-            <Clock size={20} />
+        {checkIn && checkOut && (
+          <div className={styles.infoBlock}>
+            <div className={styles.iconWrapper}>
+              <Clock size={20} />
+            </div>
+            <div>
+              <h3 className={styles.infoTitle}>{t.contact.checkInOutTitle}</h3>
+              <p className={styles.infoText}>
+                {t.contact.checkInLabel} {formatTime(checkIn)}<br />
+                {t.contact.checkOutLabel} {formatTime(checkOut)}
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className={styles.infoTitle}>{t.contact.checkInOutTitle}</h3>
-            <p className={styles.infoText}>
-              {t.contact.checkInTime}<br />
-              {t.contact.checkOutTime}
-            </p>
-          </div>
-        </div>
+        )}
       </div>
     </section>
   );
