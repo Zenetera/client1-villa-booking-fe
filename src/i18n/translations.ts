@@ -84,8 +84,8 @@ export const en = {
     phoneTitle: 'Phone',
     emailTitle: 'Email',
     checkInOutTitle: 'Check-in / Check-out',
-    checkInTime: 'Check-in: 3:00 PM',
-    checkOutTime: 'Check-out: 11:00 AM',
+    checkInLabel: 'Check-in:',
+    checkOutLabel: 'Check-out:',
     mapTitle: 'Villa location on map',
   },
   footer: {
@@ -188,8 +188,8 @@ export const el = {
     phoneTitle: 'Τηλέφωνο',
     emailTitle: 'Email',
     checkInOutTitle: 'Άφιξη / Αναχώρηση',
-    checkInTime: 'Άφιξη: 3:00 μ.μ.',
-    checkOutTime: 'Αναχώρηση: 11:00 π.μ.',
+    checkInLabel: 'Άφιξη:',
+    checkOutLabel: 'Αναχώρηση:',
     mapTitle: 'Τοποθεσία βίλας στον χάρτη',
   },
   footer: {

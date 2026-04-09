@@ -158,3 +158,52 @@ export async function updatePricingRule(
 export async function deletePricingRule(id: number): Promise<void> {
   await api(`/api/admin/pricing-rules/${id}`, { method: 'DELETE' });
 }
+
+// Contact info
+
+export interface ContactInfo {
+  id: number;
+  villaId: number;
+  ownerFullName: string;
+  ownerDisplayName: string;
+  email: string;
+  phone: string | null;
+  whatsapp: string | null;
+  streetAddress: string;
+  city: string;
+  region: string | null;
+  postalCode: string;
+  country: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface ContactInfoResponse {
+  data: ContactInfo;
+}
+
+export async function fetchContactInfo(): Promise<ContactInfo> {
+  const res = await api<ContactInfoResponse>('/api/admin/contact');
+  return res.data;
+}
+
+export interface UpdateContactInput {
+  ownerFullName: string;
+  ownerDisplayName: string;
+  email: string;
+  phone: string | null;
+  whatsapp: string | null;
+  streetAddress: string;
+  city: string;
+  region: string | null;
+  postalCode: string;
+  country: string;
+}
+
+export async function updateContactInfo(data: UpdateContactInput): Promise<ContactInfo> {
+  const res = await api<ContactInfoResponse>('/api/admin/contact', {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+  return res.data;
+}

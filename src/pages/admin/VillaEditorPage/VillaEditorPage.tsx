@@ -1,6 +1,11 @@
-import { useEffect, useState, useCallback } from 'react';
-import { fetchVillaAdmin, updateVillaDetails } from '../../../api/admin';
-import type { VillaAdmin, UpdateVillaInput } from '../../../api/admin';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import {
+  fetchVillaAdmin,
+  updateVillaDetails,
+  fetchContactInfo,
+  updateContactInfo,
+} from '../../../api/admin';
+import type { VillaAdmin, UpdateVillaInput, ContactInfo } from '../../../api/admin';
 import { LangTabs } from '../../../components/admin/LangTabs';
 import styles from './VillaEditorPage.module.css';
 
@@ -13,7 +18,13 @@ interface VillaFormState {
   descriptionEl: string;
   shortDescriptionEn: string;
   shortDescriptionEl: string;
-  address: string;
+  streetAddress: string;
+  city: string;
+  region: string;
+  postalCode: string;
+  country: string;
+  latitude: string;
+  longitude: string;
   bedrooms: string;
   bathrooms: string;
   maxGuests: string;
@@ -25,7 +36,7 @@ interface VillaFormState {
   checkOutTime: string;
 }
 
-function villaToForm(v: VillaAdmin): VillaFormState {
+function villaToForm(v: VillaAdmin, c: ContactInfo | null): VillaFormState {
   return {
     nameEn: v.nameEn,
     nameEl: v.nameEl ?? '',
@@ -33,7 +44,13 @@ function villaToForm(v: VillaAdmin): VillaFormState {
     descriptionEl: v.descriptionEl ?? '',
     shortDescriptionEn: v.shortDescriptionEn,
     shortDescriptionEl: v.shortDescriptionEl ?? '',
-    address: v.address,
+    streetAddress: c?.streetAddress ?? '',
+    city: c?.city ?? '',
+    region: c?.region ?? '',
+    postalCode: c?.postalCode ?? '',
+    country: c?.country ?? '',
+    latitude: v.latitude ?? '',
+    longitude: v.longitude ?? '',
     bedrooms: String(v.bedrooms),
     bathrooms: String(v.bathrooms),
     maxGuests: String(v.maxGuests),
@@ -54,7 +71,11 @@ function formToPayload(form: VillaFormState): UpdateVillaInput {
     descriptionEl: form.descriptionEl || null,
     shortDescriptionEn: form.shortDescriptionEn,
     shortDescriptionEl: form.shortDescriptionEl || null,
-    address: form.address,
+    address: [form.streetAddress, form.city, form.region, form.postalCode, form.country]
+      .filter(Boolean)
+      .join(', '),
+    latitude: form.latitude ? parseFloat(form.latitude) : null,
+    longitude: form.longitude ? parseFloat(form.longitude) : null,
     bedrooms: parseInt(form.bedrooms) || 1,
     bathrooms: parseInt(form.bathrooms) || 1,
     maxGuests: parseInt(form.maxGuests) || 1,
@@ -77,13 +98,18 @@ export function VillaEditorPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const contactRef = useRef<ContactInfo | null>(null);
 
   const load = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
-      const villa = await fetchVillaAdmin();
-      const state = villaToForm(villa);
+      const [villa, contact] = await Promise.all([
+        fetchVillaAdmin(),
+        fetchContactInfo().catch(() => null),
+      ]);
+      contactRef.current = contact;
+      const state = villaToForm(villa, contact);
       setForm(state);
       setSavedForm(state);
     } catch {
@@ -126,8 +152,24 @@ export function VillaEditorPage() {
     setSaving(true);
 
     try {
-      const villa = await updateVillaDetails(formToPayload(form));
-      const state = villaToForm(villa);
+      const c = contactRef.current;
+      const [villa, contact] = await Promise.all([
+        updateVillaDetails(formToPayload(form)),
+        updateContactInfo({
+          ownerFullName: c?.ownerFullName ?? '',
+          ownerDisplayName: c?.ownerDisplayName ?? '',
+          email: c?.email ?? '',
+          phone: c?.phone ?? null,
+          whatsapp: c?.whatsapp ?? null,
+          streetAddress: form.streetAddress,
+          city: form.city,
+          region: form.region || null,
+          postalCode: form.postalCode,
+          country: form.country,
+        }),
+      ]);
+      contactRef.current = contact;
+      const state = villaToForm(villa, contact);
       setForm(state);
       setSavedForm(state);
       setSuccess('Villa details saved');
@@ -161,33 +203,16 @@ export function VillaEditorPage() {
         <div className={styles.card}>
           <h2 className={styles.sectionTitle}>Basic Information</h2>
 
-          <div className={styles.fieldGroup}>
-            <div className={styles.field}>
-              <label className={styles.label}>Villa Name</label>
-              <input
-                type="text"
-                className={styles.input}
-                value={editLang === 'en' ? form.nameEn : form.nameEl}
-                onChange={(e) =>
-                  update(editLang === 'en' ? 'nameEn' : 'nameEl', e.target.value)
-                }
-              />
-            </div>
-            <div className={styles.field}>
-              <label className={styles.label}>Location</label>
-              <input
-                type="text"
-                className={styles.input}
-                value={form.address}
-                onChange={(e) => update('address', e.target.value)}
-                disabled={editLang === 'el'}
-              />
-              {editLang === 'el' && (
-                <span className={styles.fieldHintInline}>
-                  Location is language-independent
-                </span>
-              )}
-            </div>
+          <div className={styles.field}>
+            <label className={styles.label}>Villa Name</label>
+            <input
+              type="text"
+              className={styles.input}
+              value={editLang === 'en' ? form.nameEn : form.nameEl}
+              onChange={(e) =>
+                update(editLang === 'en' ? 'nameEn' : 'nameEl', e.target.value)
+              }
+            />
           </div>
 
           <div className={styles.field}>
@@ -222,6 +247,91 @@ export function VillaEditorPage() {
             />
           </div>
         </div>
+
+        {editLang === 'en' && (
+          <div className={styles.card}>
+            <h2 className={styles.sectionTitle}>Property Address</h2>
+
+            <div className={styles.field}>
+              <label className={styles.label}>Street Address</label>
+              <input
+                type="text"
+                className={styles.input}
+                value={form.streetAddress}
+                onChange={(e) => update('streetAddress', e.target.value)}
+              />
+            </div>
+
+            <div className={styles.fieldRow}>
+              <div className={styles.field}>
+                <label className={styles.label}>City</label>
+                <input
+                  type="text"
+                  className={styles.input}
+                  value={form.city}
+                  onChange={(e) => update('city', e.target.value)}
+                />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>Region / Province</label>
+                <input
+                  type="text"
+                  className={styles.input}
+                  value={form.region}
+                  onChange={(e) => update('region', e.target.value)}
+                  placeholder="Optional"
+                />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>Postal Code</label>
+                <input
+                  type="text"
+                  className={styles.input}
+                  value={form.postalCode}
+                  onChange={(e) => update('postalCode', e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className={styles.field}>
+              <label className={styles.label}>Country</label>
+              <input
+                type="text"
+                className={styles.input}
+                value={form.country}
+                onChange={(e) => update('country', e.target.value)}
+              />
+            </div>
+
+            <div className={styles.fieldRow}>
+              <div className={styles.field}>
+                <label className={styles.label}>Latitude</label>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className={styles.input}
+                  value={form.latitude}
+                  onChange={(e) => update('latitude', e.target.value)}
+                  placeholder="e.g. 40.633333"
+                />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>Longitude</label>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className={styles.input}
+                  value={form.longitude}
+                  onChange={(e) => update('longitude', e.target.value)}
+                  placeholder="e.g. 14.560055"
+                />
+              </div>
+            </div>
+            <span className={styles.fieldHintInline}>
+              Right-click your location on Google Maps and copy the coordinates
+            </span>
+          </div>
+        )}
 
         {editLang === 'en' && (
           <div className={styles.card}>
