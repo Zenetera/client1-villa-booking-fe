@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { MOCK_VILLA } from '../../../mocks/villa';
 import { fetchVilla } from '../../../api/villa';
 import type { Villa } from '../../../types/villa';
 import { HeroSection } from '../../../components/public/HeroSection';
@@ -11,20 +10,36 @@ import { useLanguage } from '../../../context/LanguageContext';
 import styles from './HomePage.module.css';
 
 export function HomePage() {
-  const { t } = useLanguage();
-  const [villa, setVilla] = useState<Villa>(MOCK_VILLA);
+  const { lang, t } = useLanguage();
+  const [villa, setVilla] = useState<Villa | null>(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetchVilla()
-      .then(setVilla)
-      .catch(() => {/* fall back to MOCK_VILLA */});
-  }, []);
+    let cancelled = false;
+    fetchVilla(lang)
+      .then((data) => {
+        if (!cancelled) {
+          setError(false);
+          setVilla(data);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setError(true);
+      });
+    return () => { cancelled = true; };
+  }, [lang]);
 
   return (
     <>
       <HeroSection />
       <SectionIntro eyebrow={t.home.retreatEyebrow} heading={t.home.retreatHeading} />
-      <VillaDetails villa={villa} />
+      {error ? (
+        <p className={styles.errorText}>Unable to load villa details.</p>
+      ) : villa ? (
+        <VillaDetails villa={villa} />
+      ) : (
+        <p className={styles.loadingText}>Loading...</p>
+      )}
       <div className={styles.gallerySection}>
         <SectionIntro eyebrow={t.home.galleryEyebrow} heading={t.home.galleryHeading} />
         <ImageGallery />

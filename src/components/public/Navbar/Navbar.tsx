@@ -1,10 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Globe, Home, Menu, X } from 'lucide-react';
+import type { Villa } from '../../../types/villa';
 import { useLanguage } from '../../../context/LanguageContext';
 import styles from './Navbar.module.css';
 
-export function Navbar() {
+interface VillaDetailsProps {
+  villa: Villa;
+}
+export function Navbar({ villa }: VillaDetailsProps) {
+  const { name} = villa;
   const { lang, toggleLang, t } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -33,7 +38,7 @@ export function Navbar() {
       <div className={styles.container}>
         <Link to="/" className={styles.logo}>
           <Home className={styles.icon} size={24} />
-          <span className={styles.brandName}>Villa Haven</span>
+          <span className={styles.brandName}>{name}</span>
         </Link>
 
         <button

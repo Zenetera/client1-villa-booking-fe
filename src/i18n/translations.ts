@@ -25,11 +25,7 @@ export const en = {
     upTo: 'Up to',
     guests: 'Guests',
     aboutHeading: 'About This Villa',
-    tagline: 'A tranquil oceanfront escape with infinity pool',
-    description: [
-      'Perched on a cliff overlooking the azure waters, Sunset Villa offers an unparalleled luxury experience. With floor-to-ceiling windows, a stunning infinity pool, and meticulously designed interiors, this retreat blends modern elegance with natural beauty.',
-      'Wake up to panoramic ocean views, unwind in the private spa, or enjoy al fresco dining on the expansive terrace. Every detail has been curated for your comfort.',
-    ],
+    houseRulesHeading: 'House Rules',
   },
   amenities: {
     heading: 'Amenities',
@@ -133,11 +129,7 @@ export const el = {
     upTo: 'Έως',
     guests: 'Επισκέπτες',
     aboutHeading: 'Σχετικά με αυτή τη Βίλα',
-    tagline: 'Μια ήρεμη παραθαλάσσια απόδραση με πισίνα ατελείωτου βάθους',
-    description: [
-      'Χτισμένη σε βράχο με θέα στα γαλάζια νερά, η Βίλα Sunset προσφέρει μια αξεπέραστη εμπειρία πολυτέλειας. Με πανοραμικά παράθυρα, εντυπωσιακή πισίνα ατελείωτου βάθους και επιμελημένα σχεδιασμένους εσωτερικούς χώρους, αυτή η κατοικία συνδυάζει τη σύγχρονη κομψότητα με τη φυσική ομορφιά.',
-      'Ξυπνήστε με πανοραμική θέα στη θάλασσα, χαλαρώστε στο ιδιωτικό spa, ή απολαύστε υπαίθριο δείπνο στην ευρύχωρη βεράντα. Κάθε λεπτομέρεια έχει επιλεχθεί για την άνεσή σας.',
-    ],
+    houseRulesHeading: 'Κανόνες Σπιτιού',
   },
   amenities: {
     heading: 'Παροχές',

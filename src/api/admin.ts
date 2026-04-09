@@ -1,5 +1,76 @@
 import { api } from './client';
 
+// Villa details (admin)
+
+export interface VillaAdmin {
+  id: number;
+  nameEn: string;
+  nameEl: string | null;
+  descriptionEn: string;
+  descriptionEl: string | null;
+  shortDescriptionEn: string;
+  shortDescriptionEl: string | null;
+  bedrooms: number;
+  bathrooms: number;
+  maxGuests: number;
+  basePricePerNight: string;
+  currency: string;
+  touristTaxPerNight: string;
+  minNights: number;
+  maxNights: number | null;
+  checkInTime: string;
+  checkOutTime: string;
+  address: string;
+  latitude: string | null;
+  longitude: string | null;
+  amenitiesEn: string[];
+  amenitiesEl: string[] | null;
+  houseRulesEn: string | null;
+  houseRulesEl: string | null;
+}
+
+interface VillaAdminResponse {
+  data: VillaAdmin;
+}
+
+export async function fetchVillaAdmin(): Promise<VillaAdmin> {
+  const res = await api<VillaAdminResponse>('/api/villa');
+  return res.data;
+}
+
+export interface UpdateVillaInput {
+  nameEn?: string;
+  nameEl?: string | null;
+  descriptionEn?: string;
+  descriptionEl?: string | null;
+  shortDescriptionEn?: string;
+  shortDescriptionEl?: string | null;
+  bedrooms?: number;
+  bathrooms?: number;
+  maxGuests?: number;
+  basePricePerNight?: number;
+  touristTaxPerNight?: number;
+  minNights?: number;
+  maxNights?: number | null;
+  checkInTime?: string;
+  checkOutTime?: string;
+  address?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  amenitiesEn?: string[];
+  amenitiesEl?: string[] | null;
+  houseRulesEn?: string | null;
+  houseRulesEl?: string | null;
+}
+
+export async function updateVillaDetails(data: UpdateVillaInput): Promise<VillaAdmin> {
+  const res = await api<VillaAdminResponse>('/api/admin/villa', {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+  return res.data;
+}
+
 // Villa pricing
 
 interface VillaPricing {

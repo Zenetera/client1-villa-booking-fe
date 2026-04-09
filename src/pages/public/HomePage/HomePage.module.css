@@ -1,3 +1,13 @@
 .gallerySection {
   background-color: #F3EEE8;
 }
+
+.loadingText,
+.errorText {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--muted-foreground);
+  text-align: center;
+  padding: 3rem 1rem;
+  margin: 0;
+}

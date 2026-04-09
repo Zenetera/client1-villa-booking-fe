@@ -1,18 +1,25 @@
 import { api } from './client';
 import type { Villa } from '../types/villa';
+import type { Lang } from '../i18n/translations';
 
 interface VillaApiResponse {
   data: {
     id: number;
     nameEn: string;
+    nameEl: string | null;
     descriptionEn: string;
+    descriptionEl: string | null;
     shortDescriptionEn: string;
+    shortDescriptionEl: string | null;
     bedrooms: number;
     bathrooms: number;
     maxGuests: number;
     basePricePerNight: string;
     currency: string;
     amenitiesEn: string[];
+    amenitiesEl: string[] | null;
+    houseRulesEn: string | null;
+    houseRulesEl: string | null;
     address: string;
     [key: string]: unknown;
   };
@@ -38,22 +45,27 @@ interface PricingQuoteResponse {
   data: PricingQuote;
 }
 
-export async function fetchVilla(): Promise<Villa> {
+export async function fetchVilla(lang: Lang = 'en'): Promise<Villa> {
   const res = await api<VillaApiResponse>('/api/villa');
   const v = res.data;
 
+  const isEl = lang === 'el';
+
   return {
     id: String(v.id),
-    name: v.nameEn,
+    name: (isEl && v.nameEl) || v.nameEn,
     location: v.address,
-    tagline: v.shortDescriptionEn,
+    tagline: (isEl && v.shortDescriptionEl) || v.shortDescriptionEn,
     bedrooms: v.bedrooms,
     bathrooms: v.bathrooms,
     maxGuests: v.maxGuests,
     pricePerNight: parseFloat(v.basePricePerNight),
     currency: '€',
-    description: v.descriptionEn.split('\n\n').filter(Boolean),
-    amenities: Array.isArray(v.amenitiesEn) ? v.amenitiesEn : [],
+    description: ((isEl && v.descriptionEl) || v.descriptionEn)
+      .split('\n\n')
+      .filter(Boolean),
+    amenities: (isEl && v.amenitiesEl) || v.amenitiesEn || [],
+    houseRules: (isEl && v.houseRulesEl) || v.houseRulesEn,
   };
 }
 

@@ -190,6 +190,38 @@
   color: var(--foreground);
 }
 
+.saveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loadingText {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--muted-foreground);
+  padding: 2rem 0;
+}
+
+.errorMsg {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--danger, #b91c1c);
+  margin: 0;
+}
+
+.successMsg {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--success, #15803d);
+  margin: 0;
+}
+
+.fieldHintInline {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
 @media (max-width: 640px) {
   .fieldGroup,
   .fieldRow {
