@@ -1,0 +1,36 @@
+.section {
+  margin-top: 2rem;
+}
+
+.heading {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 1rem;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--secondary-foreground);
+  padding-left: 1rem;
+  position: relative;
+}
+
+.item::before {
+  content: '\2022';
+  position: absolute;
+  left: 0;
+  color: var(--muted-foreground);
+}

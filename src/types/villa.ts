@@ -10,4 +10,5 @@ export interface Villa {
   currency: string;
   description: string[];
   amenities: string[];
+  houseRules: string | null;
 }
