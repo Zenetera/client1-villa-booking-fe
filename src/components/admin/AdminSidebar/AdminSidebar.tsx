@@ -3,6 +3,7 @@ import {
   ClipboardList,
   CalendarDays,
   Home,
+  Tag,
   Image,
   Mail,
   FileText,
@@ -82,6 +83,16 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
           >
             <Home size={16} />
             <span>Villa Details</span>
+          </NavLink>
+          <NavLink
+            to="/admin/pricing"
+            className={({ isActive }) =>
+              `${styles.navItem} ${isActive ? styles.active : ''}`
+            }
+            onClick={onClose}
+          >
+            <Tag size={16} />
+            <span>Pricing</span>
           </NavLink>
           <NavLink
             to="/admin/images"

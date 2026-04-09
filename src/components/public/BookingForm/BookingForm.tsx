@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { GuestInfo } from '../../../types/booking';
+import type { PricingQuote } from '../../../api/villa';
+import { fetchPricingQuote } from '../../../api/villa';
 import { PriceBreakdown } from '../PriceBreakdown';
 import { GuestInfoForm } from '../GuestInfoForm';
 import { useLanguage } from '../../../context/LanguageContext';
@@ -7,13 +9,11 @@ import styles from './BookingForm.module.css';
 
 interface BookingFormProps {
   pricePerNight: number;
-  currency?: string;
   maxGuests: number;
 }
 
 export function BookingForm({
   pricePerNight,
-  currency = '$',
   maxGuests,
 }: BookingFormProps) {
   const { t } = useLanguage();
@@ -27,6 +27,31 @@ export function BookingForm({
     specialRequests: '',
   });
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [fetchResult, setFetchResult] = useState<{
+    key: string;
+    quote: PricingQuote | null;
+  } | null>(null);
+
+  const hasValidDates = !!checkIn && !!checkOut && checkOut > checkIn;
+  const dateKey = hasValidDates ? `${checkIn}_${checkOut}` : '';
+  const pricingQuote = fetchResult?.key === dateKey ? fetchResult.quote : null;
+  const pricingLoading = hasValidDates && fetchResult?.key !== dateKey;
+
+  useEffect(() => {
+    if (!hasValidDates) return;
+
+    let cancelled = false;
+
+    fetchPricingQuote(checkIn, checkOut)
+      .then((quote) => {
+        if (!cancelled) setFetchResult({ key: dateKey, quote });
+      })
+      .catch(() => {
+        if (!cancelled) setFetchResult({ key: dateKey, quote: null });
+      });
+
+    return () => { cancelled = true; };
+  }, [checkIn, checkOut, hasValidDates, dateKey]);
 
   const handleGuestInfoChange = (field: keyof GuestInfo, value: string) => {
     setGuestInfo((prev) => ({ ...prev, [field]: value }));
@@ -36,7 +61,11 @@ export function BookingForm({
     <form className={styles.card} onSubmit={(e) => e.preventDefault()}>
       <h3 className={styles.title}>{t.booking.title}</h3>
 
-      <PriceBreakdown price={pricePerNight} currency={currency} />
+      <PriceBreakdown
+        price={pricePerNight}
+        quote={pricingQuote}
+        loading={pricingLoading}
+      />
 
       <div className={styles.dateRow}>
         <div className={styles.field}>
