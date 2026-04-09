@@ -131,8 +131,9 @@ export function ContactInfoPage() {
 
           <div className={styles.fieldRow}>
             <div className={styles.field}>
-              <label className={styles.label}>Full Name</label>
+              <label className={styles.label} htmlFor="owner-full-name">Full Name</label>
               <input
+                id="owner-full-name"
                 type="text"
                 className={styles.input}
                 value={form.ownerFullName}
@@ -140,8 +141,9 @@ export function ContactInfoPage() {
               />
             </div>
             <div className={styles.field}>
-              <label className={styles.label}>Display Name</label>
+              <label className={styles.label} htmlFor="owner-display-name">Display Name</label>
               <input
+                id="owner-display-name"
                 type="text"
                 className={styles.input}
                 value={form.ownerDisplayName}
@@ -156,8 +158,9 @@ export function ContactInfoPage() {
           <h2 className={styles.sectionTitle}>Contact Methods</h2>
 
           <div className={styles.field}>
-            <label className={styles.label}>Email Address</label>
+            <label className={styles.label} htmlFor="contact-email">Email Address</label>
             <input
+              id="contact-email"
               type="email"
               className={styles.input}
               value={form.email}
@@ -170,8 +173,9 @@ export function ContactInfoPage() {
 
           <div className={styles.fieldRow}>
             <div className={styles.field}>
-              <label className={styles.label}>Phone Number</label>
+              <label className={styles.label} htmlFor="contact-phone">Phone Number</label>
               <input
+                id="contact-phone"
                 type="tel"
                 className={styles.input}
                 value={form.phone}
@@ -180,8 +184,9 @@ export function ContactInfoPage() {
               />
             </div>
             <div className={styles.field}>
-              <label className={styles.label}>WhatsApp</label>
+              <label className={styles.label} htmlFor="contact-whatsapp">WhatsApp</label>
               <input
+                id="contact-whatsapp"
                 type="tel"
                 className={styles.input}
                 value={form.whatsapp}

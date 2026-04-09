@@ -45,6 +45,11 @@ interface PricingQuoteResponse {
   data: PricingQuote;
 }
 
+function parseNullableFloat(value: unknown): number | null {
+  const parsed = parseFloat(String(value));
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 export async function fetchVilla(lang: Lang = 'en'): Promise<Villa> {
   const res = await api<VillaApiResponse>('/api/villa');
   const v = res.data;
@@ -55,8 +60,8 @@ export async function fetchVilla(lang: Lang = 'en'): Promise<Villa> {
     id: String(v.id),
     name: (isEl && v.nameEl) || v.nameEn,
     location: v.address,
-    latitude: v.latitude != null ? parseFloat(String(v.latitude)) : null,
-    longitude: v.longitude != null ? parseFloat(String(v.longitude)) : null,
+    latitude: v.latitude != null ? parseNullableFloat(v.latitude) : null,
+    longitude: v.longitude != null ? parseNullableFloat(v.longitude) : null,
     tagline: (isEl && v.shortDescriptionEl) || v.shortDescriptionEn,
     bedrooms: v.bedrooms,
     bathrooms: v.bathrooms,

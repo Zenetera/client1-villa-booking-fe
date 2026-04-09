@@ -74,8 +74,8 @@ function formToPayload(form: VillaFormState): UpdateVillaInput {
     address: [form.streetAddress, form.city, form.region, form.postalCode, form.country]
       .filter(Boolean)
       .join(', '),
-    latitude: form.latitude ? parseFloat(form.latitude) : null,
-    longitude: form.longitude ? parseFloat(form.longitude) : null,
+    latitude: form.latitude ? (Number.isFinite(parseFloat(form.latitude)) ? parseFloat(form.latitude) : null) : null,
+    longitude: form.longitude ? (Number.isFinite(parseFloat(form.longitude)) ? parseFloat(form.longitude) : null) : null,
     bedrooms: parseInt(form.bedrooms) || 1,
     bathrooms: parseInt(form.bathrooms) || 1,
     maxGuests: parseInt(form.maxGuests) || 1,
@@ -153,22 +153,25 @@ export function VillaEditorPage() {
 
     try {
       const c = contactRef.current;
+      const contactLoaded = c !== null;
       const [villa, contact] = await Promise.all([
         updateVillaDetails(formToPayload(form)),
-        updateContactInfo({
-          ownerFullName: c?.ownerFullName ?? '',
-          ownerDisplayName: c?.ownerDisplayName ?? '',
-          email: c?.email ?? '',
-          phone: c?.phone ?? null,
-          whatsapp: c?.whatsapp ?? null,
-          streetAddress: form.streetAddress,
-          city: form.city,
-          region: form.region || null,
-          postalCode: form.postalCode,
-          country: form.country,
-        }),
+        contactLoaded
+          ? updateContactInfo({
+              ownerFullName: c.ownerFullName,
+              ownerDisplayName: c.ownerDisplayName,
+              email: c.email,
+              phone: c.phone ?? null,
+              whatsapp: c.whatsapp ?? null,
+              streetAddress: form.streetAddress,
+              city: form.city,
+              region: form.region || null,
+              postalCode: form.postalCode,
+              country: form.country,
+            })
+          : Promise.resolve(null),
       ]);
-      contactRef.current = contact;
+      if (contact) contactRef.current = contact;
       const state = villaToForm(villa, contact);
       setForm(state);
       setSavedForm(state);
