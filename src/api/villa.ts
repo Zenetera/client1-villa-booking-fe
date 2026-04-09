@@ -64,7 +64,7 @@ export async function fetchVilla(lang: Lang = 'en'): Promise<Villa> {
     description: ((isEl && v.descriptionEl) || v.descriptionEn)
       .split('\n\n')
       .filter(Boolean),
-    amenities: (isEl && v.amenitiesEl) || (Array.isArray(v.amenitiesEn) ? v.amenitiesEn : []),
+    amenities: (isEl && v.amenitiesEl) || v.amenitiesEn || [],
     houseRules: (isEl && v.houseRulesEl) || v.houseRulesEn,
   };
 }
