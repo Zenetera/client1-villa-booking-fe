@@ -36,7 +36,7 @@ export function PricingPage() {
 
   // Pricing rules state
   const [rules, setRules] = useState<PricingRule[]>([]);
-  const [rulesLoading, setRulesLoading] = useState(true);
+  const [rulesLoaded, setRulesLoaded] = useState(false);
   const [rulesError, setRulesError] = useState('');
 
   // Rule form state (add / edit)
@@ -64,13 +64,12 @@ export function PricingPage() {
 
   const loadRules = useCallback(async () => {
     try {
-      setRulesLoading(true);
       const data = await fetchPricingRules();
       setRules(data);
     } catch {
       setRulesError('Failed to load pricing rules');
     } finally {
-      setRulesLoading(false);
+      setRulesLoaded(true);
     }
   }, []);
 
@@ -299,13 +298,11 @@ export function PricingPage() {
 
         {rulesError && <p className={styles.errorMsg}>{rulesError}</p>}
 
-        {rulesLoading ? (
-          <p className={styles.emptyNote}>Loading...</p>
-        ) : rules.length === 0 ? (
+        {rulesLoaded && rules.length === 0 ? (
           <p className={styles.emptyNote}>
             No pricing rules yet. Add a rule to set seasonal or special rates.
           </p>
-        ) : (
+        ) : rules.length === 0 ? null : (
           <div className={styles.tableWrap}>
             <table className={styles.table}>
               <thead>
@@ -375,7 +372,7 @@ export function PricingPage() {
         )}
 
         {/* Mobile cards */}
-        {!rulesLoading && rules.length > 0 && (
+        {rules.length > 0 && (
           <div className={styles.mobileRules}>
             {rules.map((rule) => (
               <div key={rule.id} className={styles.ruleCard}>

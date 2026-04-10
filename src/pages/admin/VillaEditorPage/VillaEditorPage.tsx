@@ -90,32 +90,55 @@ function formToPayload(form: VillaFormState): UpdateVillaInput {
   };
 }
 
+const EMPTY_FORM: VillaFormState = {
+  nameEn: '',
+  nameEl: '',
+  descriptionEn: '',
+  descriptionEl: '',
+  shortDescriptionEn: '',
+  shortDescriptionEl: '',
+  streetAddress: '',
+  city: '',
+  region: '',
+  postalCode: '',
+  country: '',
+  latitude: '',
+  longitude: '',
+  bedrooms: '1',
+  bathrooms: '1',
+  maxGuests: '1',
+  amenitiesEn: '',
+  amenitiesEl: '',
+  houseRulesEn: '',
+  houseRulesEl: '',
+  checkInTime: '',
+  checkOutTime: '',
+};
+
 export function VillaEditorPage() {
   const [editLang, setEditLang] = useState<EditLang>('en');
-  const [form, setForm] = useState<VillaFormState | null>(null);
+  const [form, setForm] = useState<VillaFormState>(EMPTY_FORM);
   const [savedForm, setSavedForm] = useState<VillaFormState | null>(null);
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const contactRef = useRef<ContactInfo | null>(null);
+  const villaLoadedRef = useRef(false);
 
   const load = useCallback(async () => {
     try {
-      setLoading(true);
       setError('');
       const [villa, contact] = await Promise.all([
         fetchVillaAdmin(),
         fetchContactInfo().catch(() => null),
       ]);
       contactRef.current = contact;
+      villaLoadedRef.current = true;
       const state = villaToForm(villa, contact);
       setForm(state);
       setSavedForm(state);
     } catch {
       setError('Failed to load villa details');
-    } finally {
-      setLoading(false);
     }
   }, []);
 
@@ -123,29 +146,13 @@ export function VillaEditorPage() {
     load();
   }, [load]);
 
-  if (loading) {
-    return (
-      <div className={styles.page}>
-        <p className={styles.loadingText}>Loading villa details...</p>
-      </div>
-    );
-  }
-
-  if (!form) {
-    return (
-      <div className={styles.page}>
-        <p className={styles.errorMsg}>{error || 'Villa not found'}</p>
-      </div>
-    );
-  }
-
   const update = (field: keyof VillaFormState, value: string) => {
-    setForm((prev) => prev ? { ...prev, [field]: value } : prev);
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
-    if (!form) return;
+    if (!villaLoadedRef.current) return;
 
     setError('');
     setSuccess('');
@@ -429,13 +436,14 @@ export function VillaEditorPage() {
         {success && <p className={styles.successMsg}>{success}</p>}
 
         <div className={styles.actions}>
-          <button type="submit" className={styles.saveButton} disabled={saving}>
+          <button type="submit" className={styles.saveButton} disabled={saving || !savedForm}>
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
           <button
             type="button"
             className={styles.cancelButton}
             onClick={handleDiscard}
+            disabled={!savedForm}
           >
             Discard
           </button>

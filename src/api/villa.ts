@@ -84,12 +84,15 @@ export async function fetchVilla(lang: Lang = 'en'): Promise<Villa> {
     houseRules: (isEl && v.houseRulesEl) || v.houseRulesEn,
     checkInTime: (v.checkInTime as string) || '15:00',
     checkOutTime: (v.checkOutTime as string) || '11:00',
-    images: (v.images || []).map((img) => ({
-      id: img.id,
-      url: img.imageUrl,
-      alt: img.altText,
-      isHero: img.isHero,
-    })),
+    images: (v.images || [])
+      .slice()
+      .sort((a, b) => a.displayOrder - b.displayOrder)
+      .map((img) => ({
+        id: img.id,
+        url: img.imageUrl,
+        alt: img.altText,
+        isHero: img.isHero,
+      })),
   };
 }
 

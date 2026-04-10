@@ -135,8 +135,7 @@
   line-height: 1;
 }
 
-/* Loading / empty state */
-.loadingText,
+/* Empty state */
 .emptyText {
   font-family: var(--font-sans);
   font-size: 0.875rem;

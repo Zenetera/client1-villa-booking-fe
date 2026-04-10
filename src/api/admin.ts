@@ -271,6 +271,12 @@ export async function uploadToCloudinary(file: File): Promise<string> {
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
   const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
+  if (!cloudName || !uploadPreset) {
+    throw new Error(
+      'Missing Cloudinary config: VITE_CLOUDINARY_CLOUD_NAME or VITE_CLOUDINARY_UPLOAD_PRESET',
+    );
+  }
+
   const formData = new FormData();
   formData.append('file', file);
   formData.append('upload_preset', uploadPreset);

@@ -196,13 +196,6 @@
   cursor: not-allowed;
 }
 
-.loadingText {
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  color: var(--muted-foreground);
-  padding: 2rem 0;
-}
-
 .errorMsg {
   font-family: var(--font-sans);
   font-size: 0.85rem;

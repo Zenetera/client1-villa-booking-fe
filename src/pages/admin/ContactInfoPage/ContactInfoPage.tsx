@@ -36,10 +36,17 @@ function formToPayload(form: ContactFormState, c: ContactInfo): UpdateContactInp
   };
 }
 
+const EMPTY_FORM: ContactFormState = {
+  ownerFullName: '',
+  ownerDisplayName: '',
+  email: '',
+  phone: '',
+  whatsapp: '',
+};
+
 export function ContactInfoPage() {
-  const [form, setForm] = useState<ContactFormState | null>(null);
+  const [form, setForm] = useState<ContactFormState>(EMPTY_FORM);
   const [savedForm, setSavedForm] = useState<ContactFormState | null>(null);
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -47,7 +54,6 @@ export function ContactInfoPage() {
 
   const load = useCallback(async () => {
     try {
-      setLoading(true);
       setError('');
       const contact = await fetchContactInfo();
       contactRef.current = contact;
@@ -56,8 +62,6 @@ export function ContactInfoPage() {
       setSavedForm(state);
     } catch {
       setError('Failed to load contact information');
-    } finally {
-      setLoading(false);
     }
   }, []);
 
@@ -65,36 +69,20 @@ export function ContactInfoPage() {
     load();
   }, [load]);
 
-  if (loading) {
-    return (
-      <div className={styles.page}>
-        <p className={styles.loadingText}>Loading contact information...</p>
-      </div>
-    );
-  }
-
-  if (!form) {
-    return (
-      <div className={styles.page}>
-        <p className={styles.errorMsg}>{error || 'Contact info not found'}</p>
-      </div>
-    );
-  }
-
   const update = (field: keyof ContactFormState, value: string) => {
-    setForm((prev) => (prev ? { ...prev, [field]: value } : prev));
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
-    if (!form) return;
+    if (!contactRef.current) return;
 
     setError('');
     setSuccess('');
     setSaving(true);
 
     try {
-      const contact = await updateContactInfo(formToPayload(form, contactRef.current!));
+      const contact = await updateContactInfo(formToPayload(form, contactRef.current));
       contactRef.current = contact;
       const state = contactToForm(contact);
       setForm(state);
@@ -201,13 +189,14 @@ export function ContactInfoPage() {
         {success && <p className={styles.successMsg}>{success}</p>}
 
         <div className={styles.actions}>
-          <button type="submit" className={styles.saveButton} disabled={saving}>
+          <button type="submit" className={styles.saveButton} disabled={saving || !savedForm}>
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
           <button
             type="button"
             className={styles.cancelButton}
             onClick={handleDiscard}
+            disabled={!savedForm}
           >
             Discard
           </button>

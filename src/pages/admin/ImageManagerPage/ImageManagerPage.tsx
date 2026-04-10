@@ -90,6 +90,8 @@ function SortableImageCard({
           <button
             className={`${styles.iconButton} ${image.isHero ? styles.heroActive : ''}`}
             title="Set as hero image"
+            aria-label={image.isHero ? 'Current hero image' : 'Set as hero image'}
+            aria-pressed={image.isHero}
             onClick={() => onSetHero(image.id)}
           >
             <Star size={14} />
@@ -97,6 +99,7 @@ function SortableImageCard({
           <button
             className={styles.iconButton}
             title="Edit alt text"
+            aria-label="Edit alt text"
             onClick={() => onStartEdit(image)}
           >
             <Pencil size={14} />
@@ -104,6 +107,7 @@ function SortableImageCard({
           <button
             className={`${styles.iconButton} ${styles.deleteButton}`}
             title="Delete image"
+            aria-label="Delete image"
             onClick={() => onDelete(image.id)}
           >
             <Trash2 size={14} />
@@ -141,7 +145,7 @@ function SortableImageCard({
 
 export function ImageManagerPage() {
   const [images, setImages] = useState<VillaImage[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loaded, setLoaded] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [uploadErrors, setUploadErrors] = useState<string[]>([]);
@@ -165,7 +169,7 @@ export function ImageManagerPage() {
     } catch {
       setError('Failed to load images');
     } finally {
-      setLoading(false);
+      setLoaded(true);
     }
   }, []);
 
@@ -253,7 +257,7 @@ export function ImageManagerPage() {
     if (!window.confirm('Are you sure you want to delete this image?')) return;
     try {
       await deleteImage(id);
-      setImages((prev) => prev.filter((img) => img.id !== id));
+      await loadImages();
     } catch {
       setError('Failed to delete image');
     }
@@ -384,20 +388,20 @@ export function ImageManagerPage() {
         </div>
       )}
 
-      <div className={styles.galleryInfo}>
-        <span>{images.length} images</span>
-        <span className={styles.galleryHint}>
-          Drag to reorder. First image is used as the hero.
-        </span>
-      </div>
+      {loaded && (
+        <div className={styles.galleryInfo}>
+          <span>{images.length} images</span>
+          <span className={styles.galleryHint}>
+            Drag to reorder. First image is used as the hero.
+          </span>
+        </div>
+      )}
 
-      {loading ? (
-        <p className={styles.loadingText}>Loading images...</p>
-      ) : images.length === 0 ? (
+      {loaded && images.length === 0 ? (
         <p className={styles.emptyText}>
           No images yet. Upload your first image above.
         </p>
-      ) : (
+      ) : images.length === 0 ? null : (
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}

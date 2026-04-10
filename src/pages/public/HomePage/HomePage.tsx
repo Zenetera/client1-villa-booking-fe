@@ -24,7 +24,10 @@ export function HomePage() {
         }
       })
       .catch(() => {
-        if (!cancelled) setError(true);
+        if (!cancelled) {
+          setError(true);
+          setVilla(null);
+        }
       });
     return () => { cancelled = true; };
   }, [lang]);
@@ -33,7 +36,7 @@ export function HomePage() {
 
   return (
     <>
-      <HeroSection heroImageUrl={heroImage?.url} />
+      <HeroSection heroImageUrl={heroImage?.url} heroImageAlt={heroImage?.alt} />
       <SectionIntro eyebrow={t.home.retreatEyebrow} heading={t.home.retreatHeading} />
       {error ? (
         <p className={styles.errorText}>Unable to load villa details.</p>

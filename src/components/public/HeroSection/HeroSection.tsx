@@ -3,15 +3,16 @@ import styles from './HeroSection.module.css';
 
 interface HeroSectionProps {
   heroImageUrl?: string;
+  heroImageAlt?: string;
 }
 
-export function HeroSection({ heroImageUrl }: HeroSectionProps) {
+export function HeroSection({ heroImageUrl, heroImageAlt }: HeroSectionProps) {
   const { t } = useLanguage();
 
   return (
     <section className={styles.hero}>
       {heroImageUrl && (
-        <img src={heroImageUrl} alt="" className={styles.image} />
+        <img src={heroImageUrl} alt={heroImageAlt ?? ''} className={styles.image} />
       )}
       <div className={styles.overlay} />
       <div className={styles.content}>
