@@ -45,6 +45,15 @@
   opacity: 0.9;
 }
 
+.uploadButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.hiddenInput {
+  display: none;
+}
+
 /* Drop zone */
 .dropZone {
   border: 2px dashed var(--border);
@@ -63,6 +72,16 @@
   background-color: var(--secondary);
 }
 
+.dropZoneActive {
+  border-color: var(--primary);
+  background-color: var(--secondary);
+}
+
+.dropZoneDisabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
 .dropText {
   font-family: var(--font-sans);
   font-size: 0.9rem;
@@ -76,6 +95,53 @@
   font-size: 0.8rem;
   margin: 0;
   color: var(--muted-foreground);
+}
+
+/* Upload errors */
+.uploadErrors {
+  margin-bottom: 1rem;
+}
+
+.uploadError {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: #dc2828;
+  margin: 0.25rem 0;
+}
+
+/* Error banner */
+.errorBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  margin-bottom: 1rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 0.825rem;
+  color: #991b1b;
+}
+
+.dismissError {
+  background: none;
+  border: none;
+  color: #991b1b;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0;
+  line-height: 1;
+}
+
+/* Empty state */
+.emptyText {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  text-align: center;
+  padding: 3rem 0;
 }
 
 /* Gallery info */
@@ -113,20 +179,17 @@
   border-color: var(--primary);
 }
 
-.imagePlaceholder {
+.imageWrapper {
   aspect-ratio: 4 / 3;
   background-color: var(--secondary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
+  overflow: hidden;
 }
 
-.placeholderText {
-  font-family: var(--font-sans);
-  font-size: 0.8rem;
-  color: var(--muted-foreground);
-  text-align: center;
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 /* Overlay on hover */
@@ -221,6 +284,43 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.altText {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.altInput {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 0.775rem;
+  color: var(--foreground);
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  border-bottom: 1px solid var(--primary);
+}
+
+.savedIcon {
+  color: #16a34a;
+  flex-shrink: 0;
+}
+
+/* Spinner animation */
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 1100px) {

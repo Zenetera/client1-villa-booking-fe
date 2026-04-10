@@ -29,6 +29,10 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
 }
 
 .card {
@@ -194,13 +198,6 @@
 .saveButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}
-
-.loadingText {
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  color: var(--muted-foreground);
-  padding: 2rem 0;
 }
 
 .errorMsg {

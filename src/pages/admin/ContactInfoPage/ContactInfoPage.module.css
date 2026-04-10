@@ -29,6 +29,10 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
 }
 
 .card {
@@ -137,13 +141,6 @@
 .cancelButton:hover {
   border-color: var(--foreground);
   color: var(--foreground);
-}
-
-.loadingText {
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  color: var(--muted-foreground);
-  padding: 2rem 0;
 }
 
 .errorMsg {

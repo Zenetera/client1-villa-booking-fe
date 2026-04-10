@@ -1,20 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import type { VillaImage } from '../../../types/villa';
 import styles from './ImageGallery.module.css';
 
-const imageModules = import.meta.glob('../../../assets/IMG_*.JPG', { eager: true }) as Record<string, { default: string }>;
-const images: string[] = Object.entries(imageModules)
-  .sort(([a], [b]) => a.localeCompare(b))
-  .map(([, m]) => m.default);
-
 interface GalleryModalProps {
+  images: VillaImage[];
   index: number;
   onClose: () => void;
   onPrev: () => void;
   onNext: () => void;
 }
 
-function GalleryModal({ index, onClose, onPrev, onNext }: GalleryModalProps) {
+function GalleryModal({ images, index, onClose, onPrev, onNext }: GalleryModalProps) {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -45,8 +42,8 @@ function GalleryModal({ index, onClose, onPrev, onNext }: GalleryModalProps) {
         <div className={styles.imageFrame}>
           <img
             key={index}
-            src={images[index]}
-            alt={`Villa photo ${index + 1}`}
+            src={images[index].url}
+            alt={images[index].alt || `Villa photo ${index + 1}`}
             className={styles.modalImage}
           />
         </div>
@@ -63,46 +60,73 @@ function GalleryModal({ index, onClose, onPrev, onNext }: GalleryModalProps) {
   );
 }
 
-export function ImageGallery() {
-  const [modalIndex, setModalIndex] = useState<number | null>(null);
+interface ImageGalleryProps {
+  images: VillaImage[];
+}
+
+export function ImageGallery({ images }: ImageGalleryProps) {
+  const [rawModalIndex, setModalIndex] = useState<number | null>(null);
   const [expanded] = useState(false);
 
-  const open = useCallback((i: number) => setModalIndex(i), []);
+  // Derived clamp: if images shrinks below the stored index, treat the modal as closed.
+  const modalIndex =
+    rawModalIndex === null || rawModalIndex >= images.length
+      ? null
+      : rawModalIndex;
+
+  const open = useCallback((i: number) => {
+    if (i < 0 || i >= images.length) return;
+    setModalIndex(i);
+  }, [images.length]);
   const close = useCallback(() => setModalIndex(null), []);
-  const prev = useCallback(() => setModalIndex(i => i === null ? null : (i - 1 + images.length) % images.length), []);
-  const next = useCallback(() => setModalIndex(i => i === null ? null : (i + 1) % images.length), []);
+  const prev = useCallback(() => setModalIndex(i => i === null || images.length === 0 ? null : (i - 1 + images.length) % images.length), [images.length]);
+  const next = useCallback(() => setModalIndex(i => i === null || images.length === 0 ? null : (i + 1) % images.length), [images.length]);
 
-  if (images.length < 6) return null;
+  if (images.length === 0) return null;
 
-  const moreCount = images.length - 6;
+  const previewImages = images.slice(0, 6);
+  const moreCount = Math.max(0, images.length - 6);
 
   return (
     <>
       <section id='gallery' className={styles.gallery}>
-        <div className={`${styles.cell} ${styles.cellLarge}`} onClick={() => open(0)}>
-          <img src={images[0]} alt="Villa photo 1" className={styles.img} />
-        </div>
-        <div className={styles.cell} onClick={() => open(1)}>
-          <img src={images[1]} alt="Villa photo 2" className={styles.img} />
-        </div>
-        <div className={styles.cell} onClick={() => open(2)}>
-          <img src={images[2]} alt="Villa photo 3" className={styles.img} />
-        </div>
-        <div className={`${styles.cell} ${!expanded ? styles.hiddenMobile : ''}`} onClick={() => open(3)}>
-          <img src={images[3]} alt="Villa photo 4" className={styles.img} />
-        </div>
-        <div className={`${styles.cell} ${!expanded ? styles.hiddenMobile : ''}`} onClick={() => open(4)}>
-          <img src={images[4]} alt="Villa photo 5" className={styles.img} />
-        </div>
-        <div className={`${styles.cell}${moreCount > 0 ? ` ${styles.moreCell}` : ''} ${!expanded ? styles.hiddenMobile : ''}`} onClick={() => open(5)}>
-          <img src={images[5]} alt="More villa photos" className={styles.img} />
-          {moreCount > 0 && (
-            <div className={styles.moreOverlay}>
-              <span className={styles.moreCount}>+{moreCount}</span>
-              <span className={styles.moreLabel}>more photos</span>
-            </div>
-          )}
-        </div>
+        {previewImages.map((image, index) => {
+          const isLarge = index === 0;
+          const isHiddenMobile = index >= 3 && !expanded;
+          const isMoreCell = index === 5 && moreCount > 0;
+          const classes = [
+            styles.cell,
+            isLarge ? styles.cellLarge : '',
+            isMoreCell ? styles.moreCell : '',
+            isHiddenMobile ? styles.hiddenMobile : '',
+          ].filter(Boolean).join(' ');
+
+          return (
+            <button
+              key={image.id ?? index}
+              type="button"
+              className={classes}
+              onClick={() => open(index)}
+              aria-label={
+                isMoreCell
+                  ? `View all photos, ${moreCount} more`
+                  : `Open photo ${index + 1} in gallery`
+              }
+            >
+              <img
+                src={image.url}
+                alt={image.alt || (isMoreCell ? 'More villa photos' : `Villa photo ${index + 1}`)}
+                className={styles.img}
+              />
+              {isMoreCell && (
+                <div className={styles.moreOverlay}>
+                  <span className={styles.moreCount}>+{moreCount}</span>
+                  <span className={styles.moreLabel}>more photos</span>
+                </div>
+              )}
+            </button>
+          );
+        })}
       </section>
 
       {!expanded && (
@@ -115,6 +139,7 @@ export function ImageGallery() {
 
       {modalIndex !== null && (
         <GalleryModal
+          images={images}
           index={modalIndex}
           onClose={close}
           onPrev={prev}

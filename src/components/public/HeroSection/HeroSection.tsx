@@ -1,13 +1,19 @@
-import heroImage from '../../../assets/hero.png';
 import { useLanguage } from '../../../context/LanguageContext';
 import styles from './HeroSection.module.css';
 
-export function HeroSection() {
+interface HeroSectionProps {
+  heroImageUrl?: string;
+  heroImageAlt?: string;
+}
+
+export function HeroSection({ heroImageUrl, heroImageAlt }: HeroSectionProps) {
   const { t } = useLanguage();
 
   return (
     <section className={styles.hero}>
-      <img src={heroImage} alt="" className={styles.image} />
+      {heroImageUrl && (
+        <img src={heroImageUrl} alt={heroImageAlt ?? ''} className={styles.image} />
+      )}
       <div className={styles.overlay} />
       <div className={styles.content}>
         <p className={styles.eyebrow}>{t.hero.eyebrow}</p>
