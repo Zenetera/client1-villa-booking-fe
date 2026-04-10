@@ -102,7 +102,17 @@ export function ImageGallery({ images }: ImageGalleryProps) {
           ].filter(Boolean).join(' ');
 
           return (
-            <div key={image.id ?? index} className={classes} onClick={() => open(index)}>
+            <button
+              key={image.id ?? index}
+              type="button"
+              className={classes}
+              onClick={() => open(index)}
+              aria-label={
+                isMoreCell
+                  ? `View all photos, ${moreCount} more`
+                  : `Open photo ${index + 1} in gallery`
+              }
+            >
               <img
                 src={image.url}
                 alt={image.alt || (isMoreCell ? 'More villa photos' : `Villa photo ${index + 1}`)}
@@ -114,7 +124,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
                   <span className={styles.moreLabel}>more photos</span>
                 </div>
               )}
-            </div>
+            </button>
           );
         })}
       </section>

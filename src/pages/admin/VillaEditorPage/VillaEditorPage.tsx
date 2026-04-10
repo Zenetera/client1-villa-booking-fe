@@ -209,7 +209,8 @@ export function VillaEditorPage() {
         <LangTabs value={editLang} onChange={setEditLang} />
       </div>
 
-      <form className={styles.form} onSubmit={handleSave}>
+      <form onSubmit={handleSave}>
+        <fieldset className={styles.form} disabled={!savedForm}>
         <div className={styles.card}>
           <h2 className={styles.sectionTitle}>Basic Information</h2>
 
@@ -448,6 +449,7 @@ export function VillaEditorPage() {
             Discard
           </button>
         </div>
+        </fieldset>
       </form>
     </div>
   );

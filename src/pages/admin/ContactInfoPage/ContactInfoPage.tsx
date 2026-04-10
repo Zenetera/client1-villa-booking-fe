@@ -113,7 +113,8 @@ export function ContactInfoPage() {
         </div>
       </div>
 
-      <form className={styles.form} onSubmit={handleSave}>
+      <form onSubmit={handleSave}>
+        <fieldset className={styles.form} disabled={!savedForm}>
         <div className={styles.card}>
           <h2 className={styles.sectionTitle}>Owner Details</h2>
 
@@ -201,6 +202,7 @@ export function ContactInfoPage() {
             Discard
           </button>
         </div>
+        </fieldset>
       </form>
     </div>
   );

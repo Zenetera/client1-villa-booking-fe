@@ -290,6 +290,13 @@ export async function uploadToCloudinary(file: File): Promise<string> {
     throw new Error('Upload to Cloudinary failed');
   }
 
-  const data = await res.json();
+  const data = (await res.json()) as CloudinaryUploadResponse;
+  if (!data.secure_url) {
+    throw new Error('Cloudinary response missing secure_url');
+  }
   return data.secure_url;
+}
+
+interface CloudinaryUploadResponse {
+  secure_url?: string;
 }

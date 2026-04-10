@@ -177,6 +177,15 @@ export function ImageManagerPage() {
     loadImages();
   }, [loadImages]);
 
+  useEffect(() => {
+    return () => {
+      if (savedTimerRef.current) {
+        clearTimeout(savedTimerRef.current);
+        savedTimerRef.current = null;
+      }
+    };
+  }, []);
+
   // Upload
   async function handleFiles(files: File[]) {
     setUploadErrors([]);
@@ -192,19 +201,33 @@ export function ImageManagerPage() {
       }
     }
 
-    if (errors.length > 0) {
-      setUploadErrors(errors);
+    if (validFiles.length === 0) {
+      if (errors.length > 0) setUploadErrors(errors);
+      return;
     }
-
-    if (validFiles.length === 0) return;
 
     setUploading(true);
     try {
-      for (const file of validFiles) {
-        const secureUrl = await uploadToCloudinary(file);
-        await createImage({ imageUrl: secureUrl, altText: '' });
+      const results = await Promise.allSettled(
+        validFiles.map(async (file) => {
+          const secureUrl = await uploadToCloudinary(file);
+          await createImage({ imageUrl: secureUrl, altText: '' });
+        }),
+      );
+
+      results.forEach((result, idx) => {
+        if (result.status === 'rejected') {
+          const name = validFiles[idx].name;
+          errors.push(`${name}: upload failed`);
+        }
+      });
+
+      if (errors.length > 0) setUploadErrors(errors);
+
+      const successCount = results.filter((r) => r.status === 'fulfilled').length;
+      if (successCount > 0) {
+        await loadImages();
       }
-      await loadImages();
     } catch {
       setError('Failed to upload one or more images');
     } finally {
