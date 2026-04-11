@@ -4,6 +4,7 @@ import { AdminLayout } from './layouts/AdminLayout';
 import { HomePage } from './pages/public/HomePage/HomePage';
 import { TermsPage } from './pages/public/TermsPage';
 import { PrivacyPage } from './pages/public/PrivacyPage';
+import { BookingSuccessPage } from './pages/public/BookingSuccessPage';
 import { BookingsListPage } from './pages/admin/BookingsListPage';
 import { BlockedDatesPage } from './pages/admin/BlockedDatesPage';
 import { VillaEditorPage } from './pages/admin/VillaEditorPage';
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
       {
         path: 'privacy',
         element: <PrivacyPage />,
+      },
+      {
+        path: 'booking-confirmation',
+        element: <BookingSuccessPage />,
       },
     ],
   },

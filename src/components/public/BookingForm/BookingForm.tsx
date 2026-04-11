@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { GuestInfo } from '../../../types/booking';
 import type { PricingQuote } from '../../../api/villa';
 import { fetchPricingQuote } from '../../../api/villa';
+import { submitBookingRequest } from '../../../api/booking';
 import { PriceBreakdown } from '../PriceBreakdown';
 import { GuestInfoForm } from '../GuestInfoForm';
+import { AvailabilityCalendar } from '../AvailabilityCalendar';
 import { useLanguage } from '../../../context/LanguageContext';
 import styles from './BookingForm.module.css';
 
@@ -17,6 +20,7 @@ export function BookingForm({
   maxGuests,
 }: BookingFormProps) {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [guests, setGuests] = useState(1);
@@ -27,6 +31,8 @@ export function BookingForm({
     specialRequests: '',
   });
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [fetchResult, setFetchResult] = useState<{
     key: string;
     quote: PricingQuote | null;
@@ -59,8 +65,42 @@ export function BookingForm({
     setGuestInfo((prev) => ({ ...prev, [field]: value }));
   };
 
+  const canSubmit =
+    hasValidDates &&
+    !!pricingQuote &&
+    !pricingError &&
+    termsAccepted &&
+    !!guestInfo.fullName.trim() &&
+    !!guestInfo.email.trim() &&
+    !!guestInfo.phone.trim() &&
+    guests >= 1 &&
+    guests <= maxGuests &&
+    !submitting;
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!canSubmit) return;
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      const res = await submitBookingRequest({
+        checkIn,
+        checkOut,
+        numGuests: guests,
+        guestName: guestInfo.fullName.trim(),
+        guestEmail: guestInfo.email.trim(),
+        guestPhone: guestInfo.phone.trim(),
+        guestMessage: guestInfo.specialRequests.trim() || undefined,
+      });
+      navigate(`/booking-confirmation?ref=${encodeURIComponent(res.booking.referenceCode)}`);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Could not submit booking');
+      setSubmitting(false);
+    }
+  }
+
   return (
-    <form className={styles.card} onSubmit={(e) => e.preventDefault()}>
+    <form className={styles.card} onSubmit={handleSubmit}>
       <h3 className={styles.title}>{t.booking.title}</h3>
 
       <PriceBreakdown
@@ -70,25 +110,16 @@ export function BookingForm({
         error={pricingError}
       />
 
-      <div className={styles.dateRow}>
-        <div className={styles.field}>
-          <label className={styles.label}>{t.booking.checkIn}</label>
-          <input
-            type="date"
-            className={styles.input}
-            value={checkIn}
-            onChange={(e) => setCheckIn(e.target.value)}
-          />
-        </div>
-        <div className={styles.field}>
-          <label className={styles.label}>{t.booking.checkOut}</label>
-          <input
-            type="date"
-            className={styles.input}
-            value={checkOut}
-            onChange={(e) => setCheckOut(e.target.value)}
-          />
-        </div>
+      <div className={styles.field}>
+        <label className={styles.label}>{t.booking.checkIn} / {t.booking.checkOut}</label>
+        <AvailabilityCalendar
+          checkIn={checkIn}
+          checkOut={checkOut}
+          onChange={(ci, co) => {
+            setCheckIn(ci);
+            setCheckOut(co);
+          }}
+        />
       </div>
 
       <div className={`${styles.field} ${styles.guestsField}`}>
@@ -143,8 +174,10 @@ export function BookingForm({
         </label>
       </div>
 
-      <button type="submit" className={styles.submitButton} disabled={!termsAccepted}>
-        {t.booking.submit}
+      {submitError && <p className={styles.errorMessage}>{submitError}</p>}
+
+      <button type="submit" className={styles.submitButton} disabled={!canSubmit}>
+        {submitting ? '…' : t.booking.submit}
       </button>
     </form>
   );

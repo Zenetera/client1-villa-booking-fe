@@ -109,7 +109,6 @@ export interface PricingRule {
   startDate: string;
   endDate: string;
   pricePerNight: string;
-  minNights: number | null;
   priority: number;
   createdAt: string;
 }
@@ -132,7 +131,6 @@ export interface CreatePricingRuleInput {
   startDate: string;
   endDate: string;
   pricePerNight: number;
-  minNights?: number | null;
   priority?: number;
 }
 

@@ -10,6 +10,7 @@
 }
 
 .modal {
+  position: relative;
   background-color: var(--card);
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -478,4 +479,228 @@
     min-width: 0;
     text-align: center;
   }
+}
+
+.loading {
+  text-align: center;
+  padding: 32px 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+}
+
+.editControls {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.controlField {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.controlLabel {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  letter-spacing: 0.05em;
+}
+
+.controlSelect {
+  padding: 7px 10px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--foreground);
+  cursor: pointer;
+}
+
+.controlSelect:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Action buttons */
+.actionButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.actionBtn:hover {
+  background: #f9fafb;
+}
+
+.actionConfirm {
+  color: #0f6e56;
+  border-color: #a7f3d0;
+  background: #ecfdf5;
+}
+
+.actionConfirm:hover {
+  background: #d1fae5;
+}
+
+.actionComplete {
+  color: #1e40af;
+  border-color: #bfdbfe;
+  background: #eff6ff;
+}
+
+.actionComplete:hover {
+  background: #dbeafe;
+}
+
+.actionCancel {
+  color: #b91c1c;
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.actionCancel:hover {
+  background: #fee2e2;
+}
+
+/* Action confirmation sub-modal */
+.actionBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 10px;
+}
+
+.actionModal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px 20px;
+  width: 380px;
+  max-width: calc(100% - 32px);
+}
+
+.actionModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.actionModalHeader h3 {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.actionModalClose {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted-foreground);
+  padding: 2px;
+  display: flex;
+}
+
+.actionModalBody {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--foreground);
+  margin-bottom: 16px;
+}
+
+.actionModalBody p {
+  margin: 4px 0 10px;
+}
+
+.cancelReasonLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin-top: 8px;
+}
+
+.cancelReasonInput {
+  width: 100%;
+  padding: 8px 10px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  resize: vertical;
+  min-height: 64px;
+}
+
+.cancelReasonInput:focus {
+  border-color: var(--foreground);
+}
+
+.actionModalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.actionModalCancel {
+  padding: 6px 14px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--foreground);
+}
+
+.actionModalConfirm {
+  padding: 6px 14px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--primary-foreground);
+}
+
+.actionModalDanger {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+}
+
+.actionModalConfirm:disabled,
+.actionModalCancel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
