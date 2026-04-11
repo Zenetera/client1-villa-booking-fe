@@ -119,6 +119,25 @@ export async function fetchPublicContactInfo(): Promise<PublicContactInfo> {
   return res.data;
 }
 
+export interface ContactInquiryInput {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+export async function submitContactInquiry(
+  input: ContactInquiryInput,
+): Promise<void> {
+  const res = await api<{ data: { sent: boolean } }>('/api/contact/inquiry', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+  if (!res?.data?.sent) {
+    throw new Error('Contact inquiry was not sent');
+  }
+}
+
 export async function fetchPricingQuote(
   checkIn: string,
   checkOut: string,

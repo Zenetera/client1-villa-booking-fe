@@ -48,7 +48,7 @@ export function BookingsListPage() {
   const [paymentDropdownId, setPaymentDropdownId] = useState<number | null>(null);
   const [paymentDropdownPos, setPaymentDropdownPos] = useState<{ top: number; left: number } | null>(null);
   const paymentDropdownRef = useRef<HTMLDivElement>(null);
-  const paymentBadgeRefs = useRef<Map<number, HTMLButtonElement>>(new Map());
+  const paymentBadgeRefs = useRef<Set<HTMLButtonElement>>(new Set());
   const [paymentUpdating, setPaymentUpdating] = useState<number | null>(null);
   const [selectedBookingId, setSelectedBookingId] = useState<number | null>(null);
   const [confirmModal, setConfirmModal] = useState<Booking | null>(null);
@@ -108,7 +108,7 @@ export function BookingsListPage() {
       }
       if (paymentDropdownRef.current && !paymentDropdownRef.current.contains(e.target as Node)) {
         const target = e.target as Node;
-        const clickedBadge = Array.from(paymentBadgeRefs.current.values()).some((el) =>
+        const clickedBadge = Array.from(paymentBadgeRefs.current).some((el) =>
           el.contains(target),
         );
         if (!clickedBadge) {
@@ -135,14 +135,12 @@ export function BookingsListPage() {
     };
   }, [paymentDropdownId]);
 
-  const togglePaymentDropdown = (bookingId: number) => {
+  const togglePaymentDropdown = (bookingId: number, btn: HTMLButtonElement) => {
     if (paymentDropdownId === bookingId) {
       setPaymentDropdownId(null);
       setPaymentDropdownPos(null);
       return;
     }
-    const btn = paymentBadgeRefs.current.get(bookingId);
-    if (!btn) return;
     const rect = btn.getBoundingClientRect();
     setPaymentDropdownPos({ top: rect.bottom + 4, left: rect.left });
     setPaymentDropdownId(bookingId);
@@ -386,6 +384,121 @@ export function BookingsListPage() {
 
       {error && <div className={styles.errorBanner}>{error}</div>}
 
+      <div className={styles.mobileCards}>
+        {loading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div key={`sc${i}`} className={styles.card}>
+              <div className={styles.skeletonRow} />
+            </div>
+          ))
+        ) : bookings.length === 0 ? (
+          <div className={styles.emptyState}>No bookings found.</div>
+        ) : (
+          bookings.map((booking) => (
+            <div
+              key={booking.id}
+              className={styles.card}
+              role="button"
+              tabIndex={0}
+              onClick={() => setSelectedBookingId(booking.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setSelectedBookingId(booking.id);
+                }
+              }}
+            >
+              <div className={styles.cardHeader}>
+                <div className={styles.cardGuest}>
+                  <div className={styles.cardGuestName}>{booking.guestName}</div>
+                  <div className={styles.cardRef}>{booking.referenceCode}</div>
+                </div>
+                <div className={styles.cardStatus}>
+                  <span className={styles.status} data-status={booking.status}>
+                    <span className={styles.statusDot} />
+                    {BOOKING_STATUS_LABELS[booking.status]}
+                  </span>
+                </div>
+              </div>
+
+              <div className={styles.cardDetails}>
+                <div>
+                  <div className={styles.cardDetailLabel}>Check-in</div>
+                  <div className={styles.cardDetailValue}>
+                    {formatDateShort(booking.checkIn)}
+                  </div>
+                </div>
+                <div>
+                  <div className={styles.cardDetailLabel}>Check-out</div>
+                  <div className={styles.cardDetailValue}>
+                    {formatDateShort(booking.checkOut)}
+                  </div>
+                </div>
+                <div>
+                  <div className={styles.cardDetailLabel}>Nights</div>
+                  <div className={styles.cardDetailValue}>{booking.numNights}</div>
+                </div>
+                <div>
+                  <div className={styles.cardDetailLabel}>Total</div>
+                  <div className={styles.cardDetailValue}>
+                    <strong>{formatCurrency(booking.totalPrice)}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.cardFooter}>
+                <div
+                  className={styles.paymentStatusWrapper}
+                  onClick={(e) => e.stopPropagation()}
+                  onKeyDown={(e) => e.stopPropagation()}
+                  role="presentation"
+                >
+                  <button
+                    type="button"
+                    ref={(el) => {
+                      if (el) paymentBadgeRefs.current.add(el);
+                    }}
+                    className={styles.paymentBadge}
+                    data-payment={booking.paymentStatus}
+                    disabled={paymentUpdating === booking.id}
+                    onClick={(e) => togglePaymentDropdown(booking.id, e.currentTarget)}
+                  >
+                    <span className={styles.paymentDot} />
+                    {PAYMENT_STATUS_LABELS[booking.paymentStatus]}
+                  </button>
+                </div>
+                <div className={styles.actions}>
+                  {booking.status === 'pending' && (
+                    <button
+                      type="button"
+                      className={`${styles.actionIcon} ${styles.confirm}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setConfirmModal(booking);
+                      }}
+                      title="Confirm booking"
+                    >
+                      <Check size={14} />
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className={styles.actionIcon}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedBookingId(booking.id);
+                    }}
+                    title="View booking"
+                  >
+                    <Eye size={14} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <colgroup>
@@ -454,13 +567,12 @@ export function BookingsListPage() {
                         <button
                           type="button"
                           ref={(el) => {
-                            if (el) paymentBadgeRefs.current.set(booking.id, el);
-                            else paymentBadgeRefs.current.delete(booking.id);
+                            if (el) paymentBadgeRefs.current.add(el);
                           }}
                           className={styles.paymentBadge}
                           data-payment={booking.paymentStatus}
                           disabled={paymentUpdating === booking.id}
-                          onClick={() => togglePaymentDropdown(booking.id)}
+                          onClick={(e) => togglePaymentDropdown(booking.id, e.currentTarget)}
                         >
                           <span className={styles.paymentDot} />
                           {PAYMENT_STATUS_LABELS[booking.paymentStatus]}

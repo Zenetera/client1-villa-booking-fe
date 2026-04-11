@@ -8,6 +8,7 @@ import {
   listBlockedDates,
   type BlockedDate,
 } from '../../../api/blockedDate';
+import { fetchPricingRules, fetchVillaAdmin, type PricingRule } from '../../../api/admin';
 import styles from './BlockedDatesPage.module.css';
 
 const WEEK_DAYS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
@@ -22,7 +23,7 @@ const MONTH_SHORT = [
 
 type DayStatus = 'confirmed' | 'pending' | 'overlap' | 'blocked' | 'available';
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// Helpers
 
 function pad2(n: number) {
   return String(n).padStart(2, '0');
@@ -67,6 +68,21 @@ function getFirstBookingAtDate(dateStr: string, bookings: Booking[]) {
   );
 }
 
+function getEffectiveRuleForDate(
+  dateStr: string,
+  rules: PricingRule[],
+): PricingRule | null {
+  const matching = rules.filter(r => r.startDate <= dateStr && r.endDate >= dateStr);
+  if (matching.length === 0) return null;
+  return matching.reduce((best, r) => (r.priority > best.priority ? r : best));
+}
+
+function formatPriceShort(value: number): string {
+  if (!Number.isFinite(value)) return '';
+  if (value >= 1000) return `€${(value / 1000).toFixed(1)}k`;
+  return `€${Math.round(value)}`;
+}
+
 function formatRange(b: Booking) {
   const ci = new Date(b.checkIn + 'T12:00:00');
   const co = new Date(b.checkOut + 'T12:00:00');
@@ -82,7 +98,7 @@ function formatDateShort(ds: string) {
   return `${MONTH_SHORT[parseInt(m) - 1]} ${parseInt(d)}`;
 }
 
-// ── Mini Month (year strip) ───────────────────────────────────────────────────
+// Mini Month (year strip)
 
 interface MiniMonthProps {
   year: number;
@@ -118,7 +134,7 @@ function MiniMonth({ year, month, isActive, bookings, blocked, onClick }: MiniMo
   );
 }
 
-// ── Block Dates Modal ─────────────────────────────────────────────────────────
+// Block Dates Modal
 
 interface BlockModalProps {
   initialYear: number;
@@ -291,7 +307,7 @@ function BlockModal({ initialYear, initialMonth, existingBlocked, onClose, onApp
   );
 }
 
-// ── Page ─────────────────────────────────────────────────────────────────────
+// Page
 
 export function BlockedDatesPage() {
   const today = new Date();
@@ -299,6 +315,8 @@ export function BlockedDatesPage() {
   const [month, setMonth] = useState(today.getMonth());
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [blockedList, setBlockedList] = useState<BlockedDate[]>([]);
+  const [pricingRules, setPricingRules] = useState<PricingRule[]>([]);
+  const [basePrice, setBasePrice] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [blockedScope, setBlockedScope] = useState<'month' | 'year'>('year');
@@ -310,7 +328,6 @@ export function BlockedDatesPage() {
   const blockedIdByDate = new Map(manualBlocked.map((b) => [b.date, b.id]));
 
   const loadAll = useCallback(async () => {
-    setError(null);
     try {
       const fetchAllBookings = async (): Promise<Booking[]> => {
         const pageSize = 500;
@@ -323,18 +340,24 @@ export function BlockedDatesPage() {
         return all;
       };
 
-      const [allBookings, blockedRes] = await Promise.all([
+      const [allBookings, blockedRes, rulesRes, villaRes] = await Promise.all([
         fetchAllBookings(),
         listBlockedDates('manual'),
+        fetchPricingRules().catch(() => [] as PricingRule[]),
+        fetchVillaAdmin().catch(() => null),
       ]);
       setBookings(allBookings);
       setBlockedList(blockedRes);
+      setPricingRules(rulesRes);
+      setBasePrice(villaRes ? parseFloat(villaRes.basePricePerNight) : null);
+      setError(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load calendar');
     }
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadAll();
   }, [loadAll]);
 
@@ -491,15 +514,39 @@ export function BlockedDatesPage() {
               const ds = toDateStr(year, month, day);
               const status = getDayStatus(ds, bookings, blockedSet);
               const bk = getFirstBookingAtDate(ds, bookings);
-              const showLabel = bk?.checkIn === ds && status !== 'overlap';
+              const rule = getEffectiveRuleForDate(ds, pricingRules);
+              const effectivePrice = rule
+                ? parseFloat(rule.pricePerNight)
+                : basePrice;
+              const showPrice =
+                status !== 'blocked' && effectivePrice != null;
+              const titleParts: string[] = [];
+              if (bk) titleParts.push(`${bk.guestName} (${bk.referenceCode})`);
+              if (rule) titleParts.push(`Rule: ${rule.name}`);
+              if (effectivePrice != null)
+                titleParts.push(`€${effectivePrice.toFixed(0)}/night`);
+              if (status === 'blocked') titleParts.push('Blocked');
               return (
-                <div key={day} className={`${styles.dayCell} ${styles[status]}`}>
+                <div
+                  key={day}
+                  className={`${styles.dayCell} ${styles[status]}`}
+                  title={titleParts.join(' · ')}
+                >
                   <span className={styles.dayNumber}>{day}</span>
                   {status === 'overlap' && (
                     <span className={styles.overlapBadge}>!</span>
                   )}
-                  {showLabel && bk && (
-                    <span className={styles.dayLabel}>{bk.guestName.split(' ')[0]}</span>
+                  {bk && status !== 'overlap' && (
+                    <span className={styles.dayLabel}>
+                      {bk.guestName.split(' ')[0]}
+                    </span>
+                  )}
+                  {showPrice && (
+                    <span
+                      className={`${styles.dayPrice} ${rule ? styles.dayPriceRule : ''}`}
+                    >
+                      {formatPriceShort(effectivePrice!)}
+                    </span>
                   )}
                 </div>
               );
@@ -530,6 +577,45 @@ export function BlockedDatesPage() {
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Pricing rules for visible month */}
+          <div className={styles.sideCard}>
+            <h3 className={styles.sideCardTitle}>
+              Pricing — {MONTH_SHORT[month]} {year}
+            </h3>
+            {basePrice != null && (
+              <div className={styles.basePriceRow}>
+                <span className={styles.basePriceLabel}>Base rate</span>
+                <span className={styles.basePriceValue}>€{basePrice.toFixed(0)}/night</span>
+              </div>
+            )}
+            {(() => {
+              const monthRules = pricingRules
+                .filter(r => r.startDate <= lastDay && r.endDate >= firstDay)
+                .sort((a, b) => b.priority - a.priority);
+              if (monthRules.length === 0) {
+                return <p className={styles.emptyNote}>No pricing rules active this month.</p>;
+              }
+              return (
+                <div className={styles.sideList}>
+                  {monthRules.map(r => (
+                    <div key={r.id} className={styles.ruleRow}>
+                      <div className={styles.ruleInfo}>
+                        <span className={styles.ruleName}>{r.name}</span>
+                        <span className={styles.ruleMeta}>
+                          {formatDateShort(r.startDate)} → {formatDateShort(r.endDate)}
+                          {' · Priority '}{r.priority}
+                        </span>
+                      </div>
+                      <span className={styles.rulePrice}>
+                        €{parseFloat(r.pricePerNight).toFixed(0)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
 
           {/* Blocked dates */}
