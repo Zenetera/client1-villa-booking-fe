@@ -133,27 +133,6 @@
   border-color: var(--primary);
 }
 
-.errorMsg {
-  font-family: var(--font-sans);
-  font-size: 0.85rem;
-  color: var(--destructive, #b00020);
-  margin: 0;
-}
-
-.successMsg {
-  font-family: var(--font-sans);
-  font-size: 0.85rem;
-  color: var(--accent, #2e7d32);
-  margin: 0;
-}
-
-.metaHint {
-  font-family: var(--font-sans);
-  font-size: 0.8rem;
-  color: var(--muted-foreground);
-  margin: 0;
-}
-
 .actions {
   display: flex;
   gap: 0.75rem;

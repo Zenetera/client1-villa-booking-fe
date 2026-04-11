@@ -33,7 +33,7 @@ interface SitePageListResponse {
 }
 
 export async function fetchPageBySlug(slug: string): Promise<SitePage> {
-  const res = await api<SitePageResponse>(`/api/pages/${slug}`);
+  const res = await api<SitePageResponse>(`/api/pages/${encodeURIComponent(slug)}`);
   return res.data;
 }
 

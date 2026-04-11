@@ -9,6 +9,7 @@ import {
   type SitePage,
 } from '../../../api/sitePage';
 import styles from './TermsEditorPage.module.css';
+import messages from '../editorMessages.module.css';
 
 type EditLang = 'en' | 'el';
 
@@ -28,17 +29,10 @@ function pageToForm(page: SitePage): FormState {
   };
 }
 
-const EMPTY_FORM: FormState = {
-  titleEn: '',
-  titleEl: '',
-  contentEn: '',
-  contentEl: '',
-};
-
 export function TermsEditorPage() {
   const [editLang, setEditLang] = useState<EditLang>('en');
   const [page, setPage] = useState<SitePage | null>(null);
-  const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [form, setForm] = useState<FormState | null>(null);
   const [savedForm, setSavedForm] = useState<FormState | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -134,7 +128,11 @@ export function TermsEditorPage() {
         </div>
       </div>
 
-      <form className={styles.form} onSubmit={handleSave}>
+      {!page && error && <p className={messages.errorMsg}>{error}</p>}
+      {!page && !error && <p className={messages.metaHint}>Loading…</p>}
+
+      {page && form && (
+        <form className={styles.form} onSubmit={handleSave}>
           <div className={styles.card}>
             <h2 className={styles.sectionTitle}>Title</h2>
             <div className={styles.field}>
@@ -169,10 +167,10 @@ export function TermsEditorPage() {
             />
           </div>
 
-          {error && <p className={styles.errorMsg}>{error}</p>}
-          {success && <p className={styles.successMsg}>{success}</p>}
-          {page && !error && !success && (
-            <p className={styles.metaHint}>Last modified: {lastModifiedLabel}</p>
+          {error && <p className={messages.errorMsg}>{error}</p>}
+          {success && <p className={messages.successMsg}>{success}</p>}
+          {!error && !success && (
+            <p className={messages.metaHint}>Last modified: {lastModifiedLabel}</p>
           )}
 
           <div className={styles.actions}>
@@ -189,6 +187,7 @@ export function TermsEditorPage() {
             </button>
           </div>
         </form>
+      )}
     </div>
   );
 }

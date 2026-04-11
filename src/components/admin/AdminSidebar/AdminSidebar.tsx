@@ -28,13 +28,17 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
   const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
+    let active = true;
     fetchBookingStats()
       .then((stats) => {
-        setPendingCount(stats.bookings.pending);
+        if (active) setPendingCount(stats.bookings.pending);
       })
       .catch((error) => {
-        console.error('Failed to load booking stats:', error);
+        if (active) console.error('Failed to load booking stats:', error);
       });
+    return () => {
+      active = false;
+    };
   }, []);
 
   const handleLogout = () => {

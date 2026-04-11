@@ -7,7 +7,7 @@ import styles from './PrivacyPage.module.css';
 export function PrivacyPage() {
   const { lang } = useLanguage();
   const [page, setPage] = useState<SitePage | null>(null);
-  const [error, setError] = useState('');
+  const [hasLoadError, setHasLoadError] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export function PrivacyPage() {
         if (!cancelled) setPage(data);
       })
       .catch(() => {
-        if (!cancelled) setError('Unable to load privacy policy.');
+        if (!cancelled) setHasLoadError(true);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -30,6 +30,7 @@ export function PrivacyPage() {
   const isEl = lang === 'el';
   const title = page ? ((isEl && page.titleEl) || page.titleEn) : '';
   const content = page ? ((isEl && page.contentEl) || page.contentEn) : '';
+  const errorMessage = isEl ? 'Δεν ήταν δυνατή η φόρτωση της πολιτικής απορρήτου.' : 'Unable to load privacy policy.';
   const lastModifiedLabel = isEl ? 'Τελευταία ενημέρωση' : 'Last modified';
   const lastModified = page
     ? new Date(page.lastModified).toLocaleDateString(isEl ? 'el-GR' : 'en-GB', {
@@ -42,7 +43,7 @@ export function PrivacyPage() {
     <div className={styles.container}>
       <article className={styles.content}>
         {loading && <p>{isEl ? 'Φόρτωση…' : 'Loading…'}</p>}
-        {error && !loading && <p>{error}</p>}
+        {hasLoadError && !loading && <p>{errorMessage}</p>}
         {page && !loading && (
           <>
             <h1>{title}</h1>
