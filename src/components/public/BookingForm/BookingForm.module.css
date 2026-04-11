@@ -101,6 +101,17 @@
   text-decoration-color: var(--primary);
 }
 
+.errorMessage {
+  margin: 1rem 0 0;
+  padding: 0.65rem 0.85rem;
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: 6px;
+  color: var(--error-foreground);
+  font-family: var(--font-sans);
+  font-size: 0.825rem;
+}
+
 .submitButton {
   width: 100%;
   padding: 0.85rem;

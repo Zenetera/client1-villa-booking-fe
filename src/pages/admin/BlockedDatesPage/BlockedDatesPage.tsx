@@ -1,7 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Ban, X } from 'lucide-react';
-import { MOCK_BOOKINGS } from '../../../mocks/data';
 import type { Booking } from '../../../types/booking';
+import { listBookings } from '../../../api/booking';
+import {
+  createBlockedDates,
+  deleteBlockedDate,
+  listBlockedDates,
+  type BlockedDate,
+} from '../../../api/blockedDate';
 import styles from './BlockedDatesPage.module.css';
 
 const WEEK_DAYS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
@@ -119,13 +125,35 @@ interface BlockModalProps {
   initialMonth: number;
   existingBlocked: Set<string>;
   onClose: () => void;
-  onApply: (dates: Set<string>) => void;
+  onApply: (startDate: string, endDate: string) => Promise<void>;
+}
+
+function countRange(start: string, end: string): number {
+  const s = new Date(start + 'T12:00:00').getTime();
+  const e = new Date(end + 'T12:00:00').getTime();
+  return Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
+}
+
+function rangeHasBlocked(start: string, end: string, blocked: Set<string>): boolean {
+  const lo = start <= end ? start : end;
+  const hi = start <= end ? end : start;
+  const d = new Date(lo + 'T12:00:00');
+  const last = new Date(hi + 'T12:00:00');
+  while (d <= last) {
+    const ds = toDateStr(d.getFullYear(), d.getMonth(), d.getDate());
+    if (blocked.has(ds)) return true;
+    d.setDate(d.getDate() + 1);
+  }
+  return false;
 }
 
 function BlockModal({ initialYear, initialMonth, existingBlocked, onClose, onApply }: BlockModalProps) {
   const [mYear, setMYear] = useState(initialYear);
   const [mMonth, setMMonth] = useState(initialMonth);
-  const [selected, setSelected] = useState(new Set<string>());
+  const [rangeStart, setRangeStart] = useState<string | null>(null);
+  const [rangeEnd, setRangeEnd] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const total = daysInMonth(mYear, mMonth);
   const offset = monthOffset(mYear, mMonth);
@@ -139,21 +167,58 @@ function BlockModal({ initialYear, initialMonth, existingBlocked, onClose, onApp
     else setMMonth(m => m + 1);
   }
 
-  function toggle(ds: string) {
+  function pickDay(ds: string) {
     if (existingBlocked.has(ds)) return;
-    setSelected(prev => {
-      const next = new Set(prev);
-      if (next.has(ds)) next.delete(ds); else next.add(ds);
-      return next;
-    });
+    if (!rangeStart || (rangeStart && rangeEnd)) {
+      setRangeStart(ds);
+      setRangeEnd(null);
+      setError(null);
+      return;
+    }
+    if (rangeHasBlocked(rangeStart, ds, existingBlocked)) {
+      setError('Selection cannot span an already-blocked date. Pick a different endpoint.');
+      return;
+    }
+    if (ds < rangeStart) {
+      setRangeStart(ds);
+      setError(null);
+      return;
+    }
+    setRangeEnd(ds);
+    setError(null);
   }
+
+  function isInRange(ds: string): boolean {
+    if (!rangeStart) return false;
+    if (!rangeEnd) return ds === rangeStart;
+    return ds >= rangeStart && ds <= rangeEnd;
+  }
+
+  async function handleApply() {
+    if (!rangeStart) return;
+    const end = rangeEnd ?? rangeStart;
+    if (rangeHasBlocked(rangeStart, end, existingBlocked)) {
+      setError('Selection cannot span an already-blocked date.');
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      await onApply(rangeStart, end);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to block dates');
+      setSubmitting(false);
+    }
+  }
+
+  const count = rangeStart ? countRange(rangeStart, rangeEnd ?? rangeStart) : 0;
 
   return (
     <div className={styles.backdrop} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <h3 className={styles.modalTitle}>Block Dates</h3>
-          <button type="button" className={styles.modalClose} onClick={onClose}>
+          <button type="button" className={styles.modalClose} onClick={onClose} disabled={submitting}>
             <X size={16} />
           </button>
         </div>
@@ -181,13 +246,13 @@ function BlockModal({ initialYear, initialMonth, existingBlocked, onClose, onApp
             const day = i + 1;
             const ds = toDateStr(mYear, mMonth, day);
             const alreadyBlocked = existingBlocked.has(ds);
-            const isPicked = selected.has(ds);
+            const isPicked = isInRange(ds);
             return (
               <button
                 key={day}
                 type="button"
-                disabled={alreadyBlocked}
-                onClick={() => toggle(ds)}
+                disabled={alreadyBlocked || submitting}
+                onClick={() => pickDay(ds)}
                 className={`${styles.modalDayCell}
                   ${alreadyBlocked ? styles.modalDayExisting : ''}
                   ${isPicked ? styles.modalDayPicked : ''}
@@ -199,19 +264,25 @@ function BlockModal({ initialYear, initialMonth, existingBlocked, onClose, onApp
           })}
         </div>
 
+        {error && <p className={styles.modalError}>{error}</p>}
+
         <div className={styles.modalFooter}>
           <span className={styles.modalCount}>
-            {selected.size} date{selected.size !== 1 ? 's' : ''} selected
+            {rangeStart
+              ? rangeEnd
+                ? `${formatDateShort(rangeStart)} → ${formatDateShort(rangeEnd)} · ${count} night${count !== 1 ? 's' : ''}`
+                : `${formatDateShort(rangeStart)} — pick end date`
+              : 'Pick a start date'}
           </span>
           <div className={styles.modalActions}>
-            <button type="button" className={styles.modalCancel} onClick={onClose}>Cancel</button>
+            <button type="button" className={styles.modalCancel} onClick={onClose} disabled={submitting}>Cancel</button>
             <button
               type="button"
               className={styles.modalApply}
-              disabled={selected.size === 0}
-              onClick={() => onApply(selected)}
+              disabled={!rangeStart || submitting}
+              onClick={handleApply}
             >
-              Block {selected.size > 0 ? selected.size : ''} Date{selected.size !== 1 ? 's' : ''}
+              {submitting ? 'Blocking…' : `Block ${count > 0 ? count : ''} Date${count !== 1 ? 's' : ''}`}
             </button>
           </div>
         </div>
@@ -223,16 +294,49 @@ function BlockModal({ initialYear, initialMonth, existingBlocked, onClose, onApp
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export function BlockedDatesPage() {
-  const [year, setYear] = useState(2026);
-  const [month, setMonth] = useState(5); // June
-  const [blockedDates, setBlockedDates] = useState(
-    new Set<string>(['2026-06-25', '2026-06-26', '2026-06-27']),
-  );
+  const today = new Date();
+  const [year, setYear] = useState(today.getFullYear());
+  const [month, setMonth] = useState(today.getMonth());
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [blockedList, setBlockedList] = useState<BlockedDate[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [blockedScope, setBlockedScope] = useState<'month' | 'year'>('year');
   const monthsRowRef = useRef<HTMLDivElement>(null);
 
-  const bookings = MOCK_BOOKINGS;
+  // Manual blocked dates only — booking-generated dates are colored from bookings.
+  const manualBlocked = blockedList.filter((b) => b.bookingId === null);
+  const blockedSet = new Set(manualBlocked.map((b) => b.date));
+  const blockedIdByDate = new Map(manualBlocked.map((b) => [b.date, b.id]));
+
+  const loadAll = useCallback(async () => {
+    setError(null);
+    try {
+      const fetchAllBookings = async (): Promise<Booking[]> => {
+        const pageSize = 500;
+        const first = await listBookings({ status: 'all', limit: pageSize, page: 1 });
+        const all: Booking[] = [...first.bookings];
+        for (let p = 2; p <= first.pagination.totalPages; p += 1) {
+          const res = await listBookings({ status: 'all', limit: pageSize, page: p });
+          all.push(...res.bookings);
+        }
+        return all;
+      };
+
+      const [allBookings, blockedRes] = await Promise.all([
+        fetchAllBookings(),
+        listBlockedDates('manual'),
+      ]);
+      setBookings(allBookings);
+      setBlockedList(blockedRes);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to load calendar');
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadAll();
+  }, [loadAll]);
 
   // Scroll active mini-month into view on mobile
   useEffect(() => {
@@ -262,7 +366,8 @@ export function BlockedDatesPage() {
   // Blocked dates list (for side panel)
   const monthPrefix = `${year}-${pad2(month + 1)}-`;
   const yearPrefix = `${year}-`;
-  const blockedFiltered = Array.from(blockedDates)
+  const blockedFiltered = manualBlocked
+    .map((b) => b.date)
     .filter(d => d.startsWith(blockedScope === 'month' ? monthPrefix : yearPrefix))
     .sort();
 
@@ -283,21 +388,21 @@ export function BlockedDatesPage() {
     else setMonth(m => m + 1);
   }
 
-  function handleApplyBlock(dates: Set<string>) {
-    setBlockedDates(prev => {
-      const next = new Set(prev);
-      dates.forEach(d => next.add(d));
-      return next;
-    });
+  async function handleApplyBlock(startDate: string, endDate: string) {
+    await createBlockedDates(startDate, endDate);
     setShowModal(false);
+    await loadAll();
   }
 
-  function unblock(ds: string) {
-    setBlockedDates(prev => {
-      const next = new Set(prev);
-      next.delete(ds);
-      return next;
-    });
+  async function unblock(ds: string) {
+    const id = blockedIdByDate.get(ds);
+    if (id === undefined) return;
+    try {
+      await deleteBlockedDate(id);
+      await loadAll();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to unblock');
+    }
   }
 
   return (
@@ -314,6 +419,8 @@ export function BlockedDatesPage() {
         </button>
       </div>
 
+      {error && <div className={styles.errorBanner}>{error}</div>}
+
       {/* Year strip */}
       <div className={styles.yearStrip}>
         <button type="button" className={styles.yearNav} onClick={() => setYear(y => y - 1)}>
@@ -328,7 +435,7 @@ export function BlockedDatesPage() {
               month={i}
               isActive={i === month}
               bookings={bookings}
-              blocked={blockedDates}
+              blocked={blockedSet}
               onClick={() => setMonth(i)}
             />
           ))}
@@ -382,7 +489,7 @@ export function BlockedDatesPage() {
             {Array.from({ length: total }, (_, i) => {
               const day = i + 1;
               const ds = toDateStr(year, month, day);
-              const status = getDayStatus(ds, bookings, blockedDates);
+              const status = getDayStatus(ds, bookings, blockedSet);
               const bk = getFirstBookingAtDate(ds, bookings);
               const showLabel = bk?.checkIn === ds && status !== 'overlap';
               return (
@@ -413,7 +520,7 @@ export function BlockedDatesPage() {
             ) : (
               <div className={styles.sideList}>
                 {visibleBookings.map(b => (
-                  <div key={b.referenceCode} className={styles.bookingRow}>
+                  <div key={b.id} className={styles.bookingRow}>
                     <span className={`${styles.bookingDot} ${styles[`dot_${b.status}`]}`} />
                     <div className={styles.bookingInfo}>
                       <span className={styles.bookingName}>{b.guestName}</span>
@@ -493,7 +600,7 @@ export function BlockedDatesPage() {
         <BlockModal
           initialYear={year}
           initialMonth={month}
-          existingBlocked={blockedDates}
+          existingBlocked={blockedSet}
           onClose={() => setShowModal(false)}
           onApply={handleApplyBlock}
         />

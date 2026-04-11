@@ -16,7 +16,6 @@ const EMPTY_RULE: CreatePricingRuleInput = {
   startDate: '',
   endDate: '',
   pricePerNight: 0,
-  minNights: null,
   priority: 0,
 };
 
@@ -137,7 +136,6 @@ export function PricingPage() {
       startDate: formatDate(rule.startDate),
       endDate: formatDate(rule.endDate),
       pricePerNight: parseFloat(rule.pricePerNight),
-      minNights: rule.minNights,
       priority: rule.priority,
     });
     setFormError('');
@@ -311,7 +309,6 @@ export function PricingPage() {
                   <th>Start Date</th>
                   <th>End Date</th>
                   <th>Price / Night</th>
-                  <th>Min Nights</th>
                   <th>Priority</th>
                   <th></th>
                 </tr>
@@ -323,7 +320,6 @@ export function PricingPage() {
                     <td>{formatDate(rule.startDate)}</td>
                     <td>{formatDate(rule.endDate)}</td>
                     <td>&euro;{parseFloat(rule.pricePerNight).toFixed(2)}</td>
-                    <td>{rule.minNights ?? '—'}</td>
                     <td>{rule.priority}</td>
                     <td>
                       <div className={styles.rowActions}>
@@ -424,10 +420,6 @@ export function PricingPage() {
                     <span>&euro;{parseFloat(rule.pricePerNight).toFixed(2)}</span>
                   </div>
                   <div className={styles.ruleCardDetail}>
-                    <span className={styles.ruleCardLabel}>Min Nights</span>
-                    <span>{rule.minNights ?? '—'}</span>
-                  </div>
-                  <div className={styles.ruleCardDetail}>
                     <span className={styles.ruleCardLabel}>Priority</span>
                     <span>{rule.priority}</span>
                   </div>
@@ -504,22 +496,6 @@ export function PricingPage() {
                         step="0.01"
                       />
                     </div>
-                  </div>
-                  <div className={styles.field}>
-                    <label className={styles.label}>Min Nights</label>
-                    <input
-                      type="number"
-                      className={styles.input}
-                      value={ruleForm.minNights ?? ''}
-                      onChange={(e) =>
-                        setRuleForm((f) => ({
-                          ...f,
-                          minNights: e.target.value ? parseInt(e.target.value) : null,
-                        }))
-                      }
-                      min={1}
-                      placeholder="Any"
-                    />
                   </div>
                   <div className={styles.field}>
                     <label className={styles.label}>Priority</label>

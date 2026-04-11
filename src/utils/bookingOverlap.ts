@@ -14,10 +14,10 @@ function datesOverlap(aIn: string, aOut: string, bIn: string, bOut: string): boo
  * Only considers bookings that are pending or confirmed (completed and
  * cancelled bookings don't occupy dates).
  */
-export function findOverlaps(booking: Booking, allBookings: Booking[]): Booking[] {
+export function findOverlaps(booking: Pick<Booking, 'id' | 'checkIn' | 'checkOut'>, allBookings: Booking[]): Booking[] {
   return allBookings.filter(
     (other) =>
-      other.referenceCode !== booking.referenceCode &&
+      other.id !== booking.id &&
       (other.status === 'pending' || other.status === 'confirmed') &&
       datesOverlap(booking.checkIn, booking.checkOut, other.checkIn, other.checkOut),
   );
@@ -27,10 +27,13 @@ export function findOverlaps(booking: Booking, allBookings: Booking[]): Booking[
  * Returns true if confirming this booking would conflict with an already
  * confirmed booking. Used to block the confirm action.
  */
-export function hasConfirmedConflict(booking: Booking, allBookings: Booking[]): boolean {
+export function hasConfirmedConflict(
+  booking: Pick<Booking, 'id' | 'checkIn' | 'checkOut'>,
+  allBookings: Booking[],
+): boolean {
   return allBookings.some(
     (other) =>
-      other.referenceCode !== booking.referenceCode &&
+      other.id !== booking.id &&
       other.status === 'confirmed' &&
       datesOverlap(booking.checkIn, booking.checkOut, other.checkIn, other.checkOut),
   );

@@ -850,3 +850,24 @@
     padding: 1rem;
   }
 }
+
+.errorBanner,
+.modalError {
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: 6px;
+  color: var(--error-foreground);
+  font-family: var(--font-sans);
+}
+
+.errorBanner {
+  margin-bottom: 1rem;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.825rem;
+}
+
+.modalError {
+  margin: 0 1.25rem 0.5rem;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.8rem;
+}
