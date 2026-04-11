@@ -181,10 +181,11 @@ export function AvailabilityCalendar({ checkIn, checkOut, onChange }: Availabili
         {WEEK_DAYS.map((d) => (
           <div key={d} className={styles.weekDay}>{d}</div>
         ))}
-        {cells.map((cell, i) =>
-          cell === null ? (
-            <div key={`g${i}`} />
-          ) : (
+        {cells.map((cell, i) => {
+          if (cell === null) return <div key={`g${i}`} />;
+          const cellAvail = availability.get(cell.ds);
+          const priceNum = parseFloat(cellAvail?.price ?? '');
+          return (
             <button
               key={cell.ds}
               type="button"
@@ -192,10 +193,15 @@ export function AvailabilityCalendar({ checkIn, checkOut, onChange }: Availabili
               onClick={() => pickDay(cell.ds)}
               disabled={loading}
             >
-              {cell.day}
+              <span className={styles.dayNum}>{cell.day}</span>
+              {Number.isFinite(priceNum) && (
+                <span className={styles.dayPrice}>
+                  €{Math.round(priceNum)}
+                </span>
+              )}
             </button>
-          ),
-        )}
+          );
+        })}
       </div>
     </div>
   );

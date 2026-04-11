@@ -48,6 +48,8 @@ export interface PricingQuote {
   touristTaxPerNight: string;
   touristTaxTotal: string;
   totalPrice: string;
+  depositPercentage: string;
+  depositAmount: string;
 }
 
 interface PricingQuoteResponse {

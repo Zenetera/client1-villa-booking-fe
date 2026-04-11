@@ -91,6 +91,10 @@ export function PriceBreakdown({
         <span>{t.price.total}</span>
         <span>€{quote.totalPrice}</span>
       </div>
+      <div className={`${styles.summaryRow} ${styles.depositRow}`}>
+        <span>{t.price.deposit} ({parseFloat(quote.depositPercentage).toFixed(0)}%)</span>
+        <span>€{quote.depositAmount}</span>
+      </div>
     </div>
   );
 }
