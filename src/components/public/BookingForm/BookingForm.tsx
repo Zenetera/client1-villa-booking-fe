@@ -121,6 +121,8 @@ export function BookingForm({
           }}
         />
       </div>
+      
+      <hr className={styles.divider} />
 
       <div className={`${styles.field} ${styles.guestsField}`}>
         <label className={styles.label}>{t.booking.guests}</label>
@@ -165,10 +167,6 @@ export function BookingForm({
             {t.booking.termsSep1}
             <a href="/privacy" target="_blank" rel="noopener noreferrer" className={styles.termsLink}>
               {t.booking.privacyLink}
-            </a>
-            {t.booking.termsSep2}
-            <a href="#" className={styles.termsLink}>
-              {t.booking.cancellationLink}
             </a>
           </span>
         </label>

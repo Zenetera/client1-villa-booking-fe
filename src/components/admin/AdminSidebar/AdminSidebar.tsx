@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   ClipboardList,
@@ -13,6 +14,7 @@ import {
   X,
 } from 'lucide-react';
 import { useAuth } from '../../../hooks/useAuth';
+import { fetchBookingStats } from '../../../api/booking';
 import styles from './AdminSidebar.module.css';
 
 interface AdminSidebarProps {
@@ -23,8 +25,17 @@ interface AdminSidebarProps {
 export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const [pendingCount, setPendingCount] = useState(0);
 
-  const pendingCount = 3;
+  useEffect(() => {
+    fetchBookingStats()
+      .then((stats) => {
+        setPendingCount(stats.bookings.pending);
+      })
+      .catch((error) => {
+        console.error('Failed to load booking stats:', error);
+      });
+  }, []);
 
   const handleLogout = () => {
     logout();

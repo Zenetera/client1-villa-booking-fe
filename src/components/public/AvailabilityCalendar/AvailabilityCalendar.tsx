@@ -192,7 +192,12 @@ export function AvailabilityCalendar({ checkIn, checkOut, onChange }: Availabili
               onClick={() => pickDay(cell.ds)}
               disabled={loading}
             >
-              {cell.day}
+              <span className={styles.dayNum}>{cell.day}</span>
+              {availability.get(cell.ds)?.price && (
+                <span className={styles.dayPrice}>
+                  €{Math.round(parseFloat(availability.get(cell.ds)!.price!))}
+                </span>
+              )}
             </button>
           ),
         )}

@@ -27,6 +27,7 @@ export function PricingPage() {
   // Base pricing state
   const [basePricePerNight, setBasePricePerNight] = useState('');
   const [touristTaxPerNight, setTouristTaxPerNight] = useState('');
+  const [depositPercentage, setDepositPercentage] = useState('');
   const [minNights, setMinNights] = useState('');
   const [maxNights, setMaxNights] = useState('');
   const [baseSaving, setBaseSaving] = useState(false);
@@ -54,6 +55,7 @@ export function PricingPage() {
       const v = await fetchVillaPricing();
       setBasePricePerNight(String(v.basePricePerNight));
       setTouristTaxPerNight(String(v.touristTaxPerNight));
+      setDepositPercentage(String(v.depositPercentage));
       setMinNights(String(v.minNights));
       setMaxNights(v.maxNights != null ? String(v.maxNights) : '');
     } catch {
@@ -86,6 +88,7 @@ export function PricingPage() {
 
     const price = parseFloat(basePricePerNight);
     const tax = parseFloat(touristTaxPerNight);
+    const deposit = parseFloat(depositPercentage);
     const min = parseInt(minNights);
     const max = maxNights ? parseInt(maxNights) : null;
 
@@ -99,6 +102,11 @@ export function PricingPage() {
       setBaseSaving(false);
       return;
     }
+    if (isNaN(deposit) || deposit < 0 || deposit > 100) {
+      setBaseError('Deposit percentage must be between 0 and 100');
+      setBaseSaving(false);
+      return;
+    }
     if (isNaN(min) || min < 1) {
       setBaseError('Minimum nights must be at least 1');
       setBaseSaving(false);
@@ -109,6 +117,7 @@ export function PricingPage() {
       await updateVillaPricing({
         basePricePerNight: price,
         touristTaxPerNight: tax,
+        depositPercentage: deposit,
         minNights: min,
         maxNights: max,
       });
@@ -241,6 +250,22 @@ export function PricingPage() {
                 />
               </div>
             </div>
+          </div>
+
+          <div className={styles.fieldRow}>
+            <div className={styles.field}>
+              <label className={styles.label}>Deposit Percentage (%)</label>
+              <input
+                type="number"
+                className={styles.input}
+                value={depositPercentage}
+                onChange={(e) => setDepositPercentage(e.target.value)}
+                min={0}
+                max={100}
+                step="0.01"
+              />
+            </div>
+            <div className={styles.field} />
           </div>
 
           <div className={styles.fieldRow}>

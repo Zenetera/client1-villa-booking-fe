@@ -16,6 +16,7 @@ export interface VillaAdmin {
   basePricePerNight: string;
   currency: string;
   touristTaxPerNight: string;
+  depositPercentage: string;
   minNights: number;
   maxNights: number | null;
   checkInTime: string;
@@ -50,6 +51,7 @@ export interface UpdateVillaInput {
   maxGuests?: number;
   basePricePerNight?: number;
   touristTaxPerNight?: number;
+  depositPercentage?: number;
   minNights?: number;
   maxNights?: number | null;
   checkInTime?: string;
@@ -76,6 +78,7 @@ export async function updateVillaDetails(data: UpdateVillaInput): Promise<VillaA
 interface VillaPricing {
   basePricePerNight: string;
   touristTaxPerNight: string;
+  depositPercentage: string;
   minNights: number;
   maxNights: number | null;
 }
@@ -92,6 +95,7 @@ export async function fetchVillaPricing(): Promise<VillaPricing & { id: number }
 export async function updateVillaPricing(data: {
   basePricePerNight?: number;
   touristTaxPerNight?: number;
+  depositPercentage?: number;
   minNights?: number;
   maxNights?: number | null;
 }): Promise<void> {
