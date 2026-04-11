@@ -33,16 +33,21 @@ export function LocationMap() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const name = formName.trim();
+    const email = formEmail.trim();
+    const subject = formSubject.trim();
+    const message = formMessage.trim();
+    if (!name || !email || !subject || !message || !/^\S+@\S+\.\S+$/.test(email)) {
+      setFormError(t.contact.errorMessage);
+      setFormStatus('error');
+      setSubmitting(false);
+      return;
+    }
     setSubmitting(true);
     setFormStatus('idle');
     setFormError(null);
     try {
-      await submitContactInquiry({
-        name: formName.trim(),
-        email: formEmail.trim(),
-        subject: formSubject.trim(),
-        message: formMessage.trim(),
-      });
+      await submitContactInquiry({ name, email, subject, message });
       setFormStatus('success');
       setFormName('');
       setFormEmail('');
@@ -153,12 +158,16 @@ export function LocationMap() {
                 disabled={submitting}
               />
             </div>
-            {formStatus === 'success' && (
-              <div className={styles.formSuccess}>{t.contact.successMessage}</div>
-            )}
-            {formStatus === 'error' && (
-              <div className={styles.formError}>{formError || t.contact.errorMessage}</div>
-            )}
+            <div role="status" aria-live="polite" aria-atomic="true">
+              {formStatus === 'success' && (
+                <div className={styles.formSuccess}>{t.contact.successMessage}</div>
+              )}
+            </div>
+            <div role="alert" aria-live="assertive" aria-atomic="true">
+              {formStatus === 'error' && (
+                <div className={styles.formError}>{formError || t.contact.errorMessage}</div>
+              )}
+            </div>
             <button type="submit" className={styles.submitBtn} disabled={submitting}>
               {submitting ? t.contact.sending : t.contact.sendButton}
             </button>

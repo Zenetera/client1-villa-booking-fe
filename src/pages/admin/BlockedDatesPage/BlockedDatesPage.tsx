@@ -350,6 +350,7 @@ export function BlockedDatesPage() {
       setBlockedList(blockedRes);
       setPricingRules(rulesRes);
       setBasePrice(villaRes ? parseFloat(villaRes.basePricePerNight) : null);
+      setError(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load calendar');
     }

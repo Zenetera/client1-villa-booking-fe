@@ -129,10 +129,13 @@ export interface ContactInquiryInput {
 export async function submitContactInquiry(
   input: ContactInquiryInput,
 ): Promise<void> {
-  await api<{ data: { sent: boolean } }>('/api/contact/inquiry', {
+  const res = await api<{ data: { sent: boolean } }>('/api/contact/inquiry', {
     method: 'POST',
     body: JSON.stringify(input),
   });
+  if (!res?.data?.sent) {
+    throw new Error('Contact inquiry was not sent');
+  }
 }
 
 export async function fetchPricingQuote(
