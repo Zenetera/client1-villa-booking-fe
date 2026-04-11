@@ -134,6 +134,19 @@ function countRange(start: string, end: string): number {
   return Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
 }
 
+function rangeHasBlocked(start: string, end: string, blocked: Set<string>): boolean {
+  const lo = start <= end ? start : end;
+  const hi = start <= end ? end : start;
+  const d = new Date(lo + 'T12:00:00');
+  const last = new Date(hi + 'T12:00:00');
+  while (d <= last) {
+    const ds = toDateStr(d.getFullYear(), d.getMonth(), d.getDate());
+    if (blocked.has(ds)) return true;
+    d.setDate(d.getDate() + 1);
+  }
+  return false;
+}
+
 function BlockModal({ initialYear, initialMonth, existingBlocked, onClose, onApply }: BlockModalProps) {
   const [mYear, setMYear] = useState(initialYear);
   const [mMonth, setMMonth] = useState(initialMonth);
@@ -159,13 +172,20 @@ function BlockModal({ initialYear, initialMonth, existingBlocked, onClose, onApp
     if (!rangeStart || (rangeStart && rangeEnd)) {
       setRangeStart(ds);
       setRangeEnd(null);
+      setError(null);
+      return;
+    }
+    if (rangeHasBlocked(rangeStart, ds, existingBlocked)) {
+      setError('Selection cannot span an already-blocked date. Pick a different endpoint.');
       return;
     }
     if (ds < rangeStart) {
       setRangeStart(ds);
+      setError(null);
       return;
     }
     setRangeEnd(ds);
+    setError(null);
   }
 
   function isInRange(ds: string): boolean {
@@ -177,6 +197,10 @@ function BlockModal({ initialYear, initialMonth, existingBlocked, onClose, onApp
   async function handleApply() {
     if (!rangeStart) return;
     const end = rangeEnd ?? rangeStart;
+    if (rangeHasBlocked(rangeStart, end, existingBlocked)) {
+      setError('Selection cannot span an already-blocked date.');
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
@@ -288,11 +312,22 @@ export function BlockedDatesPage() {
   const loadAll = useCallback(async () => {
     setError(null);
     try {
-      const [bookingRes, blockedRes] = await Promise.all([
-        listBookings({ status: 'all', limit: 500 }),
+      const fetchAllBookings = async (): Promise<Booking[]> => {
+        const pageSize = 500;
+        const first = await listBookings({ status: 'all', limit: pageSize, page: 1 });
+        const all: Booking[] = [...first.bookings];
+        for (let p = 2; p <= first.pagination.totalPages; p += 1) {
+          const res = await listBookings({ status: 'all', limit: pageSize, page: p });
+          all.push(...res.bookings);
+        }
+        return all;
+      };
+
+      const [allBookings, blockedRes] = await Promise.all([
+        fetchAllBookings(),
         listBlockedDates('manual'),
       ]);
-      setBookings(bookingRes.bookings);
+      setBookings(allBookings);
       setBlockedList(blockedRes);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load calendar');

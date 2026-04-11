@@ -21,10 +21,16 @@ export function BookingSuccessPage() {
             <code className={styles.refCode}>{reference}</code>
           </div>
         )}
-        <p className={styles.note}>
-          Please keep your reference for any follow-up. Note that your booking is not confirmed
-          until we approve it.
-        </p>
+        {reference ? (
+          <p className={styles.note}>
+            Please keep your reference for any follow-up. Note that your booking is not confirmed
+            until we approve it.
+          </p>
+        ) : (
+          <p className={styles.note}>
+            Note that your booking is not confirmed until we approve it.
+          </p>
+        )}
         <Link to="/" className={styles.homeLink}>
           Back to villa
         </Link>

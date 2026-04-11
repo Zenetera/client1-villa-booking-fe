@@ -104,10 +104,10 @@
 .errorMessage {
   margin: 1rem 0 0;
   padding: 0.65rem 0.85rem;
-  background-color: #FEE2E2;
-  border: 1px solid #FCA5A5;
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
   border-radius: 6px;
-  color: #991B1B;
+  color: var(--error-foreground);
   font-family: var(--font-sans);
   font-size: 0.825rem;
 }

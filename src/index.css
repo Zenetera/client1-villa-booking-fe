@@ -31,6 +31,10 @@
   
   --destructive: #DC2828;
   --destructive-foreground: #FAFAFA;
+
+  --error-bg: #FEE2E2;
+  --error-border: #FCA5A5;
+  --error-foreground: #991B1B;
   
   --border: #E5E1DC;
   --input: #E5E1DC;
