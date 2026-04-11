@@ -386,6 +386,100 @@ export function BookingsListPage() {
 
       {error && <div className={styles.errorBanner}>{error}</div>}
 
+      <div className={styles.mobileCards}>
+        {loading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div key={`sc${i}`} className={styles.card}>
+              <div className={styles.skeletonRow} />
+            </div>
+          ))
+        ) : bookings.length === 0 ? (
+          <div className={styles.emptyState}>No bookings found.</div>
+        ) : (
+          bookings.map((booking) => (
+            <div
+              key={booking.id}
+              className={styles.card}
+              onClick={() => setSelectedBookingId(booking.id)}
+            >
+              <div className={styles.cardHeader}>
+                <div className={styles.cardGuest}>
+                  <div className={styles.cardGuestName}>{booking.guestName}</div>
+                  <div className={styles.cardRef}>{booking.referenceCode}</div>
+                </div>
+                <div className={styles.cardStatus}>
+                  <span className={styles.status} data-status={booking.status}>
+                    <span className={styles.statusDot} />
+                    {BOOKING_STATUS_LABELS[booking.status]}
+                  </span>
+                </div>
+              </div>
+
+              <div className={styles.cardDetails}>
+                <div>
+                  <div className={styles.cardDetailLabel}>Check-in</div>
+                  <div className={styles.cardDetailValue}>
+                    {formatDateShort(booking.checkIn)}
+                  </div>
+                </div>
+                <div>
+                  <div className={styles.cardDetailLabel}>Check-out</div>
+                  <div className={styles.cardDetailValue}>
+                    {formatDateShort(booking.checkOut)}
+                  </div>
+                </div>
+                <div>
+                  <div className={styles.cardDetailLabel}>Nights</div>
+                  <div className={styles.cardDetailValue}>{booking.numNights}</div>
+                </div>
+                <div>
+                  <div className={styles.cardDetailLabel}>Total</div>
+                  <div className={styles.cardDetailValue}>
+                    <strong>{formatCurrency(booking.totalPrice)}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.cardFooter}>
+                <span
+                  className={styles.paymentBadge}
+                  data-payment={booking.paymentStatus}
+                >
+                  <span className={styles.paymentDot} />
+                  {PAYMENT_STATUS_LABELS[booking.paymentStatus]}
+                </span>
+                <div className={styles.actions}>
+                  {booking.status === 'pending' && (
+                    <button
+                      type="button"
+                      className={`${styles.actionIcon} ${styles.confirm}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setConfirmModal(booking);
+                      }}
+                      title="Confirm booking"
+                    >
+                      <Check size={14} />
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className={styles.actionIcon}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedBookingId(booking.id);
+                    }}
+                    title="View booking"
+                  >
+                    <Eye size={14} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <colgroup>
