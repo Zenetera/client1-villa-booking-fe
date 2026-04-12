@@ -320,14 +320,16 @@ export function BlockedDatesPage() {
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [blockedScope, setBlockedScope] = useState<'month' | 'year'>('year');
+  const [loading, setLoading] = useState(true);
   const monthsRowRef = useRef<HTMLDivElement>(null);
 
   // Manual blocked dates only — booking-generated dates are colored from bookings.
   const manualBlocked = blockedList.filter((b) => b.bookingId === null);
-  const blockedSet = new Set(manualBlocked.map((b) => b.date));
-  const blockedIdByDate = new Map(manualBlocked.map((b) => [b.date, b.id]));
+  const blockedSet = new Set(manualBlocked.map((b) => b.date.slice(0, 10)));
+  const blockedIdByDate = new Map(manualBlocked.map((b) => [b.date.slice(0, 10), b.id]));
 
   const loadAll = useCallback(async () => {
+    setLoading(true);
     try {
       const fetchAllBookings = async (): Promise<Booking[]> => {
         const pageSize = 500;
@@ -353,6 +355,8 @@ export function BlockedDatesPage() {
       setError(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load calendar');
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -390,7 +394,7 @@ export function BlockedDatesPage() {
   const monthPrefix = `${year}-${pad2(month + 1)}-`;
   const yearPrefix = `${year}-`;
   const blockedFiltered = manualBlocked
-    .map((b) => b.date)
+    .map((b) => b.date.slice(0, 10))
     .filter(d => d.startsWith(blockedScope === 'month' ? monthPrefix : yearPrefix))
     .sort();
 
@@ -506,51 +510,61 @@ export function BlockedDatesPage() {
             {WEEK_DAYS.map(d => (
               <div key={d} className={styles.dayHeader}>{d}</div>
             ))}
-            {Array.from({ length: offset }, (_, i) => (
-              <div key={`g${i}`} className={styles.emptyCell} />
-            ))}
-            {Array.from({ length: total }, (_, i) => {
-              const day = i + 1;
-              const ds = toDateStr(year, month, day);
-              const status = getDayStatus(ds, bookings, blockedSet);
-              const bk = getFirstBookingAtDate(ds, bookings);
-              const rule = getEffectiveRuleForDate(ds, pricingRules);
-              const effectivePrice = rule
-                ? parseFloat(rule.pricePerNight)
-                : basePrice;
-              const showPrice =
-                status !== 'blocked' && effectivePrice != null;
-              const titleParts: string[] = [];
-              if (bk) titleParts.push(`${bk.guestName} (${bk.referenceCode})`);
-              if (rule) titleParts.push(`Rule: ${rule.name}`);
-              if (effectivePrice != null)
-                titleParts.push(`€${effectivePrice.toFixed(0)}/night`);
-              if (status === 'blocked') titleParts.push('Blocked');
-              return (
-                <div
-                  key={day}
-                  className={`${styles.dayCell} ${styles[status]}`}
-                  title={titleParts.join(' · ')}
-                >
-                  <span className={styles.dayNumber}>{day}</span>
-                  {status === 'overlap' && (
-                    <span className={styles.overlapBadge}>!</span>
-                  )}
-                  {bk && status !== 'overlap' && (
-                    <span className={styles.dayLabel}>
-                      {bk.guestName.split(' ')[0]}
-                    </span>
-                  )}
-                  {showPrice && (
-                    <span
-                      className={`${styles.dayPrice} ${rule ? styles.dayPriceRule : ''}`}
+            {loading ? (
+              <>
+                {Array.from({ length: 35 }, (_, i) => (
+                  <div key={`sk${i}`} className={styles.skeletonCalendarCell} />
+                ))}
+              </>
+            ) : (
+              <>
+                {Array.from({ length: offset }, (_, i) => (
+                  <div key={`g${i}`} className={styles.emptyCell} />
+                ))}
+                {Array.from({ length: total }, (_, i) => {
+                  const day = i + 1;
+                  const ds = toDateStr(year, month, day);
+                  const status = getDayStatus(ds, bookings, blockedSet);
+                  const bk = getFirstBookingAtDate(ds, bookings);
+                  const rule = getEffectiveRuleForDate(ds, pricingRules);
+                  const effectivePrice = rule
+                    ? parseFloat(rule.pricePerNight)
+                    : basePrice;
+                  const showPrice =
+                    status !== 'blocked' && effectivePrice != null;
+                  const titleParts: string[] = [];
+                  if (bk) titleParts.push(`${bk.guestName} (${bk.referenceCode})`);
+                  if (rule) titleParts.push(`Rule: ${rule.name}`);
+                  if (effectivePrice != null)
+                    titleParts.push(`€${effectivePrice.toFixed(0)}/night`);
+                  if (status === 'blocked') titleParts.push('Blocked');
+                  return (
+                    <div
+                      key={day}
+                      className={`${styles.dayCell} ${styles[status]}`}
+                      title={titleParts.join(' · ')}
                     >
-                      {formatPriceShort(effectivePrice!)}
-                    </span>
-                  )}
-                </div>
-              );
-            })}
+                      <span className={styles.dayNumber}>{day}</span>
+                      {status === 'overlap' && (
+                        <span className={styles.overlapBadge}>!</span>
+                      )}
+                      {bk && status !== 'overlap' && (
+                        <span className={styles.dayLabel}>
+                          {bk.guestName.split(' ')[0]}
+                        </span>
+                      )}
+                      {showPrice && (
+                        <span
+                          className={`${styles.dayPrice} ${rule ? styles.dayPriceRule : ''}`}
+                        >
+                          {formatPriceShort(effectivePrice!)}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </>
+            )}
           </div>
         </div>
 
@@ -562,7 +576,11 @@ export function BlockedDatesPage() {
             <h3 className={styles.sideCardTitle}>
               Bookings — {MONTH_SHORT[month]} {year}
             </h3>
-            {visibleBookings.length === 0 ? (
+            {loading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={`sb${i}`} className={styles.skeletonSideRow} />
+              ))
+            ) : visibleBookings.length === 0 ? (
               <p className={styles.emptyNote}>No bookings this month.</p>
             ) : (
               <div className={styles.sideList}>
@@ -584,13 +602,17 @@ export function BlockedDatesPage() {
             <h3 className={styles.sideCardTitle}>
               Pricing — {MONTH_SHORT[month]} {year}
             </h3>
-            {basePrice != null && (
+            {loading ? (
+              Array.from({ length: 2 }).map((_, i) => (
+                <div key={`sp${i}`} className={styles.skeletonSideRow} />
+              ))
+            ) : basePrice != null && (
               <div className={styles.basePriceRow}>
                 <span className={styles.basePriceLabel}>Base rate</span>
                 <span className={styles.basePriceValue}>€{basePrice.toFixed(0)}/night</span>
               </div>
             )}
-            {(() => {
+            {!loading && (() => {
               const monthRules = pricingRules
                 .filter(r => r.startDate <= lastDay && r.endDate >= firstDay)
                 .sort((a, b) => b.priority - a.priority);
@@ -632,7 +654,11 @@ export function BlockedDatesPage() {
               </select>
             </div>
 
-            {blockedFiltered.length === 0 ? (
+            {loading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={`sbd${i}`} className={styles.skeletonSideRow} />
+              ))
+            ) : blockedFiltered.length === 0 ? (
               <p className={styles.emptyNote}>No blocked dates.</p>
             ) : blockedScope === 'month' ? (
               <div className={styles.sideList}>

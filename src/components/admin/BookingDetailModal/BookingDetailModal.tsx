@@ -141,7 +141,46 @@ export function BookingDetailModal({ bookingId, onClose, onUpdated }: BookingDet
         </div>
 
         <div className={styles.body}>
-          {loading && <p className={styles.loading}>Loading…</p>}
+          {loading && (
+            <div role="status" aria-live="polite">
+              <span className="sr-only">Loading booking details…</span>
+              <div aria-hidden="true">
+                <div className={styles.skeletonStatusRow}>
+                  <div className={styles.skeletonBadgeContainer}>
+                    <div className={styles.skeletonBadge} />
+                    <div className={styles.skeletonRef} />
+                  </div>
+                  <div className={styles.skeletonDate} />
+                </div>
+
+                <div className={styles.skeletonSectionTitle} />
+                <div className={styles.skeletonGrid}>
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={`g${i}`} className={styles.skeletonGridCell}>
+                      <div className={styles.skeletonCellLabel} />
+                      <div className={styles.skeletonCellValue} />
+                    </div>
+                  ))}
+                </div>
+
+                <div className={`${styles.skeletonSectionTitle} ${styles.skeletonSectionSpacing}`} />
+                <div className={styles.skeletonGrid}>
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={`s${i}`} className={styles.skeletonGridCell}>
+                      <div className={styles.skeletonCellLabel} />
+                      <div className={styles.skeletonCellValue} />
+                    </div>
+                  ))}
+                </div>
+
+                <div className={`${styles.skeletonSectionTitle} ${styles.skeletonSectionSpacing}`} />
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={`p${i}`} className={styles.skeletonPriceLine} />
+                ))}
+                <div className={styles.skeletonTotal} />
+              </div>
+            </div>
+          )}
 
           {error && (
             <div className={styles.alert} data-variant="error">

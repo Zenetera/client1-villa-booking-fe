@@ -13,6 +13,17 @@ export interface BlockedDate {
   createdAt: string;
 }
 
+function normalizeDate(raw: string): string {
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) {
+    throw new Error(`Invalid blocked-date value: ${raw}`);
+  }
+  const yyyy = d.getUTCFullYear();
+  const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(d.getUTCDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 export async function listBlockedDates(
   scope: 'manual' | 'all' = 'manual',
   range?: { from?: string; to?: string },
@@ -24,7 +35,7 @@ export async function listBlockedDates(
   const res = await api<ApiResponse<BlockedDate[]>>(
     `/api/admin/blocked-dates?${qs.toString()}`,
   );
-  return res.data;
+  return res.data.map((b) => ({ ...b, date: normalizeDate(b.date) }));
 }
 
 export async function createBlockedDates(
