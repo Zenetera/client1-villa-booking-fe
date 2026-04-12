@@ -109,6 +109,12 @@
   }
 }
 
+@media (max-width: 640px) {
+  .section {
+    padding: 0 1rem 3rem;
+  }
+}
+
 .card {
   width: 100%;
   max-width: 340px;

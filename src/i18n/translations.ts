@@ -6,17 +6,15 @@ export const en = {
     contactUs: 'Contact Us',
   },
   hero: {
-    eyebrow: 'Curated Luxury Retreats',
-    headingLine1: 'Find Your Perfect',
-    headingEm: 'Escape',
-    subtitle: "Handpicked villas in the world's most breathtaking destinations",
+    headingLine1: 'Your Next Escape',
+    headingEm: 'Starts Here',
   },
   home: {
     retreatEyebrow: 'Your Retreat Awaits',
     retreatHeading: 'Plan Your Stay',
     galleryEyebrow: 'Every corner tells a story of Mediterranean luxury and comfort',
     galleryHeading: 'Explore the Villa',
-    locationEyebrow: 'Find us on the stunning Amalfi Coast',
+    locationEyebrow: 'Find us on the stunning coast',
     locationHeading: 'Location & Contact',
   },
   villa: {
@@ -112,17 +110,15 @@ export const el = {
     contactUs: 'Επικοινωνία',
   },
   hero: {
-    eyebrow: 'Επιλεγμένες Πολυτελείς Διαμονές',
-    headingLine1: 'Βρείτε την Τέλεια',
-    headingEm: 'Απόδρασή σας',
-    subtitle: 'Επιλεγμένες βίλες στους πιο εντυπωσιακούς προορισμούς του κόσμου',
+    headingLine1: 'Η Επόμενη Απόδρασή σας',
+    headingEm: 'Ξεκινά Εδώ',
   },
   home: {
     retreatEyebrow: 'Η Απόδρασή σας Περιμένει',
     retreatHeading: 'Σχεδιάστε τη Διαμονή σας',
     galleryEyebrow: 'Κάθε γωνιά αφηγείται μια ιστορία μεσογειακής πολυτέλειας και άνεσης',
     galleryHeading: 'Εξερευνήστε τη Βίλα',
-    locationEyebrow: 'Βρείτε μας στη μαγευτική Ακτή Αμάλφι',
+    locationEyebrow: 'Βρείτε μας στη μαγευτική ακτή',
     locationHeading: 'Τοποθεσία & Επικοινωνία',
   },
   villa: {

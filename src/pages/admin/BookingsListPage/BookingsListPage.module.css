@@ -286,11 +286,6 @@
   min-width: 0;
 }
 
-.statCol + .statCol {
-  padding-left: 28px;
-  border-left: 1px solid var(--border);
-}
-
 .statLabel {
   display: block;
   font-family: var(--font-sans);
@@ -379,6 +374,7 @@
 }
 
 .progressBar {
+  width: 60%;
   height: 3px;
   background: #f3f4f6;
   border-radius: 2px;
@@ -407,10 +403,16 @@
   margin-bottom: 4px;
 }
 
-.statsDivider {
+.statsDividerGroup {
+  display: grid;
+  grid-template-columns: 3fr 7fr;
+  gap: 48px;
+  margin: 20px 0 16px;
+}
+
+.statsDividerLine {
   height: 1px;
   background: var(--border);
-  margin: 20px 0 16px;
 }
 
 .statsBottom {
@@ -447,10 +449,8 @@
 
 .nextGroup {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 24px;
-  padding-left: 28px;
-  border-left: 1px solid var(--border);
 }
 
 .nextItem {
@@ -1047,6 +1047,20 @@
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 
+@media (max-width: 1024px) {
+  .statValueHuge {
+    font-size: 42px;
+  }
+
+  .statValueMedium {
+    font-size: 18px;
+  }
+
+  .statUnit {
+    font-size: 18px;
+  }
+}
+
 @media (max-width: 900px) {
   .opsStrip {
     flex-wrap: wrap;
@@ -1086,7 +1100,7 @@
   }
 
   .toolbar {
-    flex-wrap: wrap;
+    flex-wrap: wrap-reverse;
   }
 
   .searchInput {
@@ -1095,6 +1109,10 @@
 
   .statsBar {
     padding: 18px 16px;
+  }
+
+  .statsDividerGroup {
+    display: none;
   }
 
   .statsTop {
@@ -1110,16 +1128,18 @@
   }
 
   .statValueHuge {
-    font-size: 40px;
+    font-size: 36px;
   }
 
   .statsBottom {
     grid-template-columns: 1fr;
     gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
   }
 
   .nextGroup {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     padding-left: 0;
     border-left: none;
     padding-top: 16px;

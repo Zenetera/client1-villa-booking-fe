@@ -284,7 +284,10 @@ export function BookingsListPage() {
           </div>
         </div>
 
-        <div className={styles.statsDivider} />
+        <div className={styles.statsDividerGroup}>
+          <div className={styles.statsDividerLine} />
+          <div className={styles.statsDividerLine} />
+        </div>
 
         <div className={styles.statsBottom}>
           <div className={styles.pendingCol}>
@@ -324,17 +327,6 @@ export function BookingsListPage() {
                     {formatDateShort(stats.nextCheckOut.checkOut)}
                   </span>
                 </>
-              ) : (
-                <span className={styles.nextGuest}>—</span>
-              )}
-            </div>
-
-            <div className={styles.nextItem}>
-              <span className={styles.statLabel}>Gap nights</span>
-              {stats?.nextCheckOut?.gapNightsToNext != null ? (
-                <span className={styles.statValueMedium}>
-                  {stats.nextCheckOut.gapNightsToNext} nights
-                </span>
               ) : (
                 <span className={styles.nextGuest}>—</span>
               )}

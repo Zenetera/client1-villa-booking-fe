@@ -158,16 +158,16 @@ export function LocationMap() {
                 disabled={submitting}
               />
             </div>
-            <div role="status" aria-live="polite" aria-atomic="true">
-              {formStatus === 'success' && (
+            {formStatus === 'success' && (
+              <div role="status" aria-live="polite" aria-atomic="true">
                 <div className={styles.formSuccess}>{t.contact.successMessage}</div>
-              )}
-            </div>
-            <div role="alert" aria-live="assertive" aria-atomic="true">
-              {formStatus === 'error' && (
+              </div>
+            )}
+            {formStatus === 'error' && (
+              <div role="alert" aria-live="assertive" aria-atomic="true">
                 <div className={styles.formError}>{formError || t.contact.errorMessage}</div>
-              )}
-            </div>
+              </div>
+            )}
             <button type="submit" className={styles.submitBtn} disabled={submitting}>
               {submitting ? t.contact.sending : t.contact.sendButton}
             </button>

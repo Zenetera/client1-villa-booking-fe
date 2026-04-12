@@ -1,5 +1,4 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { MoreHorizontal } from 'lucide-react';
 import { useLanguage } from '../../../context/LanguageContext';
 import styles from './Footer.module.css';
 
@@ -49,10 +48,6 @@ export function Footer() {
             </nav>
           </div>
         </div>
-
-        <button className={styles.moreButton} aria-label="More options">
-          <MoreHorizontal size={18} />
-        </button>
       </div>
     </footer>
   );

@@ -111,7 +111,6 @@
   border-radius: 8px;
   cursor: pointer;
   transition: opacity 0.2s ease, transform 0.2s ease;
-  margin-top: 1.5rem;
 }
 
 .submitBtn:hover {
@@ -190,12 +189,21 @@
 }
 
 @media (max-width: 768px) {
+  .section {
+    padding: 0 1rem 3rem;
+  }
+
   .topRow {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   .mapWrapper {
     min-height: 260px;
+  }
+
+  .rightCol {
+    padding: 1.25rem;
   }
 
   .formRow {
@@ -204,5 +212,13 @@
 
   .bottomRow {
     flex-direction: column;
+  }
+
+  .infoTitle {
+    font-size: 1rem;
+  }
+
+  .infoText {
+    font-size: 0.85rem;
   }
 }

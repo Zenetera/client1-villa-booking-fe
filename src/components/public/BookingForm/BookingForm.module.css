@@ -142,7 +142,7 @@
 
 @media (max-width: 640px) {
   .card {
-    padding: 1.5rem;
+    padding: 1.25rem;
     position: static;
   }
 
