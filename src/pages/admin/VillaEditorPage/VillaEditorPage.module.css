@@ -220,6 +220,36 @@
   color: var(--muted-foreground);
 }
 
+/* ── Skeleton ──────────────────────────────────────────────────────── */
+
+.skeleton {
+  background: linear-gradient(90deg, var(--muted) 0%, var(--border) 50%, var(--muted) 100%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.2s infinite linear;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeletonLabel {
+  composes: skeleton;
+  height: 14px;
+  width: 80px;
+}
+
+.skeletonInput {
+  composes: skeleton;
+  height: 40px;
+}
+
+.skeletonTextarea {
+  composes: skeleton;
+  height: 120px;
+}
+
 @media (max-width: 640px) {
   .fieldGroup,
   .fieldRow {

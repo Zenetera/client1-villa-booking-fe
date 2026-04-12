@@ -481,11 +481,95 @@
   }
 }
 
-.loading {
-  text-align: center;
-  padding: 32px 0;
-  color: var(--muted-foreground);
-  font-size: 13px;
+/* ── Skeleton ──────────────────────────────────────────────────────── */
+
+.skeleton {
+  background: linear-gradient(90deg, var(--muted) 0%, var(--border) 50%, var(--muted) 100%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.2s infinite linear;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeletonStatusRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.skeletonBadge {
+  composes: skeleton;
+  height: 24px;
+  width: 80px;
+  border-radius: 12px;
+}
+
+.skeletonRef {
+  composes: skeleton;
+  height: 24px;
+  width: 100px;
+}
+
+.skeletonDate {
+  composes: skeleton;
+  height: 14px;
+  width: 120px;
+}
+
+.skeletonSectionTitle {
+  composes: skeleton;
+  height: 12px;
+  width: 110px;
+  margin-bottom: 0.75rem;
+}
+
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--border);
+}
+
+.skeletonGridCell {
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.skeletonGrid .skeletonGridCell:nth-child(odd) {
+  border-right: 1px solid var(--border);
+}
+
+.skeletonCellLabel {
+  composes: skeleton;
+  height: 10px;
+  width: 50px;
+  margin-bottom: 6px;
+}
+
+.skeletonCellValue {
+  composes: skeleton;
+  height: 16px;
+  width: 100%;
+}
+
+.skeletonPriceLine {
+  composes: skeleton;
+  height: 28px;
+  margin-bottom: 4px;
+}
+
+.skeletonPriceLine:last-child {
+  margin-bottom: 0;
+}
+
+.skeletonTotal {
+  composes: skeleton;
+  height: 40px;
+  border-radius: 0 0 6px 6px;
 }
 
 .editControls {

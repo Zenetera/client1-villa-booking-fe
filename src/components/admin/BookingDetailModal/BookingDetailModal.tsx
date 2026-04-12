@@ -141,7 +141,43 @@ export function BookingDetailModal({ bookingId, onClose, onUpdated }: BookingDet
         </div>
 
         <div className={styles.body}>
-          {loading && <p className={styles.loading}>Loading…</p>}
+          {loading && (
+            <>
+              <div className={styles.skeletonStatusRow}>
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <div className={styles.skeletonBadge} />
+                  <div className={styles.skeletonRef} />
+                </div>
+                <div className={styles.skeletonDate} />
+              </div>
+
+              <div className={styles.skeletonSectionTitle} />
+              <div className={styles.skeletonGrid}>
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={`g${i}`} className={styles.skeletonGridCell}>
+                    <div className={styles.skeletonCellLabel} />
+                    <div className={styles.skeletonCellValue} />
+                  </div>
+                ))}
+              </div>
+
+              <div className={styles.skeletonSectionTitle} style={{ marginTop: '1.5rem' }} />
+              <div className={styles.skeletonGrid}>
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={`s${i}`} className={styles.skeletonGridCell}>
+                    <div className={styles.skeletonCellLabel} />
+                    <div className={styles.skeletonCellValue} />
+                  </div>
+                ))}
+              </div>
+
+              <div className={styles.skeletonSectionTitle} style={{ marginTop: '1.5rem' }} />
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={`p${i}`} className={styles.skeletonPriceLine} />
+              ))}
+              <div className={styles.skeletonTotal} />
+            </>
+          )}
 
           {error && (
             <div className={styles.alert} data-variant="error">

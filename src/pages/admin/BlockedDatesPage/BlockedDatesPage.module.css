@@ -939,6 +939,36 @@
   }
 }
 
+/* ── Skeleton ──────────────────────────────────────────────────────── */
+
+.skeleton {
+  background: linear-gradient(90deg, var(--muted) 0%, var(--border) 50%, var(--muted) 100%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.2s infinite linear;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeletonCalendarCell {
+  composes: skeleton;
+  aspect-ratio: 1;
+  border-radius: 5px;
+}
+
+.skeletonSideRow {
+  composes: skeleton;
+  height: 28px;
+  margin-bottom: 6px;
+}
+
+.skeletonSideRow:last-child {
+  margin-bottom: 0;
+}
+
 .errorBanner,
 .modalError {
   background-color: var(--error-bg);

@@ -113,6 +113,36 @@ export function ContactInfoPage() {
         </div>
       </div>
 
+      {!savedForm ? (
+        <div className={styles.form}>
+          <div className={styles.card}>
+            <h2 className={styles.sectionTitle}>Owner Details</h2>
+            <div className={styles.fieldRow}>
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className={styles.field}>
+                  <div className={styles.skeletonLabel} />
+                  <div className={styles.skeletonInput} />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className={styles.card}>
+            <h2 className={styles.sectionTitle}>Contact Methods</h2>
+            <div className={styles.field}>
+              <div className={styles.skeletonLabel} />
+              <div className={styles.skeletonInput} />
+            </div>
+            <div className={styles.fieldRow}>
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className={styles.field}>
+                  <div className={styles.skeletonLabel} />
+                  <div className={styles.skeletonInput} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
       <form onSubmit={handleSave}>
         <fieldset className={styles.form} disabled={!savedForm}>
         <div className={styles.card}>
@@ -204,6 +234,7 @@ export function ContactInfoPage() {
         </div>
         </fieldset>
       </form>
+      )}
     </div>
   );
 }

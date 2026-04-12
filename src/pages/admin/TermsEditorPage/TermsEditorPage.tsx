@@ -129,7 +129,18 @@ export function TermsEditorPage() {
       </div>
 
       {!page && error && <p className={messages.errorMsg}>{error}</p>}
-      {!page && !error && <p className={messages.metaHint}>Loading…</p>}
+      {!page && !error && (
+        <div className={styles.form}>
+          <div className={styles.card}>
+            <h2 className={styles.sectionTitle}>Title</h2>
+            <div className={styles.skeletonInput} />
+          </div>
+          <div className={styles.card}>
+            <h2 className={styles.sectionTitle}>Content</h2>
+            <div className={styles.skeletonEditor} />
+          </div>
+        </div>
+      )}
 
       {page && form && (
         <form className={styles.form} onSubmit={handleSave}>

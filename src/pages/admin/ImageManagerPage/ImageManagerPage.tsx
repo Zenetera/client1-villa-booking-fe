@@ -420,11 +420,20 @@ export function ImageManagerPage() {
         </div>
       )}
 
-      {loaded && images.length === 0 ? (
+      {!loaded ? (
+        <div className={styles.grid}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={`sk${i}`} className={styles.skeletonCard}>
+              <div className={styles.skeletonThumb} />
+              <div className={styles.skeletonAlt} />
+            </div>
+          ))}
+        </div>
+      ) : images.length === 0 ? (
         <p className={styles.emptyText}>
           No images yet. Upload your first image above.
         </p>
-      ) : images.length === 0 ? null : (
+      ) : (
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}

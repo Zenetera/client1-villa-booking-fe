@@ -209,6 +209,45 @@ export function VillaEditorPage() {
         <LangTabs value={editLang} onChange={setEditLang} />
       </div>
 
+      {!savedForm ? (
+        <div className={styles.form}>
+          <div className={styles.card}>
+            <h2 className={styles.sectionTitle}>Basic Information</h2>
+            <div className={styles.field}>
+              <div className={styles.skeletonLabel} />
+              <div className={styles.skeletonInput} />
+            </div>
+            <div className={styles.field}>
+              <div className={styles.skeletonLabel} />
+              <div className={styles.skeletonInput} />
+            </div>
+            <div className={styles.field}>
+              <div className={styles.skeletonLabel} />
+              <div className={styles.skeletonTextarea} />
+            </div>
+          </div>
+          <div className={styles.card}>
+            <h2 className={styles.sectionTitle}>Property Address</h2>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className={styles.field}>
+                <div className={styles.skeletonLabel} />
+                <div className={styles.skeletonInput} />
+              </div>
+            ))}
+          </div>
+          <div className={styles.card}>
+            <h2 className={styles.sectionTitle}>Property Details</h2>
+            <div className={styles.fieldRow}>
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className={styles.field}>
+                  <div className={styles.skeletonLabel} />
+                  <div className={styles.skeletonInput} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
       <form onSubmit={handleSave}>
         <fieldset className={styles.form} disabled={!savedForm}>
         <div className={styles.card}>
@@ -451,6 +490,7 @@ export function VillaEditorPage() {
         </div>
         </fieldset>
       </form>
+      )}
     </div>
   );
 }

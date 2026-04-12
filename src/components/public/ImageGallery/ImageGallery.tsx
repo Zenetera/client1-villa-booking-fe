@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { VillaImage } from '../../../types/villa';
+import { cloudinaryUrl } from '../../../utils/cloudinaryImage';
 import styles from './ImageGallery.module.css';
 
 interface GalleryModalProps {
@@ -42,9 +43,10 @@ function GalleryModal({ images, index, onClose, onPrev, onNext }: GalleryModalPr
         <div className={styles.imageFrame}>
           <img
             key={index}
-            src={images[index].url}
+            src={cloudinaryUrl(images[index].url, { width: 1400 })}
             alt={images[index].alt || `Villa photo ${index + 1}`}
             className={styles.modalImage}
+            decoding="async"
           />
         </div>
 
@@ -114,9 +116,11 @@ export function ImageGallery({ images }: ImageGalleryProps) {
               }
             >
               <img
-                src={image.url}
+                src={cloudinaryUrl(image.url, { width: isLarge ? 800 : 400 })}
                 alt={image.alt || (isMoreCell ? 'More villa photos' : `Villa photo ${index + 1}`)}
                 className={styles.img}
+                loading="lazy"
+                decoding="async"
               />
               {isMoreCell && (
                 <div className={styles.moreOverlay}>

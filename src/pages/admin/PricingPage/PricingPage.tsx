@@ -30,6 +30,7 @@ export function PricingPage() {
   const [depositPercentage, setDepositPercentage] = useState('');
   const [minNights, setMinNights] = useState('');
   const [maxNights, setMaxNights] = useState('');
+  const [baseLoaded, setBaseLoaded] = useState(false);
   const [baseSaving, setBaseSaving] = useState(false);
   const [baseError, setBaseError] = useState('');
   const [baseSuccess, setBaseSuccess] = useState('');
@@ -60,6 +61,8 @@ export function PricingPage() {
       setMaxNights(v.maxNights != null ? String(v.maxNights) : '');
     } catch {
       setBaseError('Failed to load pricing data');
+    } finally {
+      setBaseLoaded(true);
     }
   }, []);
 
@@ -217,6 +220,37 @@ export function PricingPage() {
       </div>
 
       {/* Base Pricing */}
+      {!baseLoaded ? (
+        <div className={styles.card}>
+          <h2 className={styles.sectionTitle}>Base Pricing</h2>
+          <div className={styles.fieldRow}>
+            {Array.from({ length: 2 }).map((_, i) => (
+              <div key={i} className={styles.field}>
+                <div className={styles.skeletonLabel} />
+                <div className={styles.skeletonInput} />
+              </div>
+            ))}
+            <div className={styles.field} />
+          </div>
+          <div className={styles.fieldRow}>
+            <div className={styles.field}>
+              <div className={styles.skeletonLabel} />
+              <div className={styles.skeletonInput} />
+            </div>
+            <div className={styles.field} />
+            <div className={styles.field} />
+          </div>
+          <div className={styles.fieldRow}>
+            {Array.from({ length: 2 }).map((_, i) => (
+              <div key={i} className={styles.field}>
+                <div className={styles.skeletonLabel} />
+                <div className={styles.skeletonInput} />
+              </div>
+            ))}
+            <div className={styles.field} />
+          </div>
+        </div>
+      ) : (
       <form className={styles.form} onSubmit={handleSaveBase}>
         <div className={styles.card}>
           <h2 className={styles.sectionTitle}>Base Pricing</h2>
@@ -302,6 +336,7 @@ export function PricingPage() {
           </div>
         </div>
       </form>
+      )}
 
       {/* Pricing Rules */}
       <div className={styles.card}>
@@ -321,11 +356,15 @@ export function PricingPage() {
 
         {rulesError && <p className={styles.errorMsg}>{rulesError}</p>}
 
-        {rulesLoaded && rules.length === 0 ? (
+        {!rulesLoaded ? (
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={`sr${i}`} className={styles.skeletonTableRow} />
+          ))
+        ) : rules.length === 0 ? (
           <p className={styles.emptyNote}>
             No pricing rules yet. Add a rule to set seasonal or special rates.
           </p>
-        ) : rules.length === 0 ? null : (
+        ) : (
           <div className={styles.tableWrap}>
             <table className={styles.table}>
               <thead>
