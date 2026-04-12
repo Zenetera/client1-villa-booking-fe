@@ -329,6 +329,7 @@ export function BlockedDatesPage() {
   const blockedIdByDate = new Map(manualBlocked.map((b) => [b.date.slice(0, 10), b.id]));
 
   const loadAll = useCallback(async () => {
+    setLoading(true);
     try {
       const fetchAllBookings = async (): Promise<Booking[]> => {
         const pageSize = 500;

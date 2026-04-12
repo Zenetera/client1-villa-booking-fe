@@ -48,12 +48,14 @@ export function ContactInfoPage() {
   const [form, setForm] = useState<ContactFormState>(EMPTY_FORM);
   const [savedForm, setSavedForm] = useState<ContactFormState | null>(null);
   const [saving, setSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const contactRef = useRef<ContactInfo | null>(null);
 
   const load = useCallback(async () => {
     try {
+      setIsLoading(true);
       setError('');
       const contact = await fetchContactInfo();
       contactRef.current = contact;
@@ -62,6 +64,8 @@ export function ContactInfoPage() {
       setSavedForm(state);
     } catch {
       setError('Failed to load contact information');
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -113,7 +117,7 @@ export function ContactInfoPage() {
         </div>
       </div>
 
-      {!savedForm ? (
+      {isLoading ? (
         <div className={styles.form}>
           <div className={styles.card}>
             <h2 className={styles.sectionTitle}>Owner Details</h2>
@@ -140,6 +144,12 @@ export function ContactInfoPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      ) : !savedForm ? (
+        <div className={styles.form}>
+          <div className={styles.card}>
+            <p className={styles.errorMsg}>{error || 'Failed to load contact information'}</p>
           </div>
         </div>
       ) : (

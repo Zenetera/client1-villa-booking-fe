@@ -204,6 +204,13 @@
   height: 400px;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background-position: 0 0;
+  }
+}
+
 @media (max-width: 640px) {
   .header {
     flex-direction: column;

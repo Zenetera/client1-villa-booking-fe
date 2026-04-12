@@ -479,6 +479,14 @@
     min-width: 0;
     text-align: center;
   }
+
+  .skeletonGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .skeletonGrid .skeletonGridCell:nth-child(odd) {
+    border-right: none;
+  }
 }
 
 /* ── Skeleton ──────────────────────────────────────────────────────── */
@@ -528,6 +536,15 @@
   margin-bottom: 0.75rem;
 }
 
+.skeletonSectionSpacing {
+  margin-top: 1.5rem;
+}
+
+.skeletonBadgeContainer {
+  display: flex;
+  gap: 0.75rem;
+}
+
 .skeletonGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -570,6 +587,13 @@
   composes: skeleton;
   height: 40px;
   border-radius: 0 0 6px 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background-position: 0 0;
+  }
 }
 
 .editControls {

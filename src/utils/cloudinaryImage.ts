@@ -19,7 +19,8 @@ export function cloudinaryUrl(
   if (idx === -1) return rawUrl;
 
   const parts = ['f_auto', 'q_auto'];
-  if (opts.width) parts.push(`w_${opts.width}`);
+  const w = opts.width != null ? Math.trunc(opts.width) : 0;
+  if (w > 0) parts.push(`w_${w}`);
 
   const insertAt = idx + UPLOAD_SEGMENT.length;
   return rawUrl.slice(0, insertAt) + parts.join(',') + '/' + rawUrl.slice(insertAt);
@@ -30,6 +31,10 @@ export function cloudinarySrcSet(
   widths: number[],
 ): string {
   return widths
-    .map((w) => `${cloudinaryUrl(rawUrl, { width: w })} ${w}w`)
+    .filter((w) => Number.isFinite(w) && Math.trunc(w) > 0)
+    .map((w) => {
+      const size = Math.trunc(w);
+      return `${cloudinaryUrl(rawUrl, { width: size })} ${size}w`;
+    })
     .join(', ');
 }

@@ -357,6 +357,13 @@
   width: 60%;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background-position: 0 0;
+  }
+}
+
 @media (max-width: 1100px) {
   .grid {
     grid-template-columns: repeat(4, 1fr);

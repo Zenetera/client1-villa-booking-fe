@@ -120,6 +120,7 @@ export function VillaEditorPage() {
   const [form, setForm] = useState<VillaFormState>(EMPTY_FORM);
   const [savedForm, setSavedForm] = useState<VillaFormState | null>(null);
   const [saving, setSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const contactRef = useRef<ContactInfo | null>(null);
@@ -127,6 +128,7 @@ export function VillaEditorPage() {
 
   const load = useCallback(async () => {
     try {
+      setIsLoading(true);
       setError('');
       const [villa, contact] = await Promise.all([
         fetchVillaAdmin(),
@@ -139,6 +141,8 @@ export function VillaEditorPage() {
       setSavedForm(state);
     } catch {
       setError('Failed to load villa details');
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -209,7 +213,7 @@ export function VillaEditorPage() {
         <LangTabs value={editLang} onChange={setEditLang} />
       </div>
 
-      {!savedForm ? (
+      {isLoading ? (
         <div className={styles.form}>
           <div className={styles.card}>
             <h2 className={styles.sectionTitle}>Basic Information</h2>
@@ -245,6 +249,12 @@ export function VillaEditorPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      ) : !savedForm ? (
+        <div className={styles.form}>
+          <div className={styles.card}>
+            <p className={styles.errorMsg}>{error || 'Failed to load villa details'}</p>
           </div>
         </div>
       ) : (
