@@ -1,4 +1,4 @@
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../hooks/useLanguage';
 import { cloudinaryUrl, cloudinarySrcSet } from '../../../utils/cloudinaryImage';
 import styles from './HeroSection.module.css';
 

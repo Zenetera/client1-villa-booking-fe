@@ -82,9 +82,39 @@
   color: #F5F1EC;
 }
 
+.bottomBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2D2A27;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  color: #6B6560;
+  letter-spacing: 0.02em;
+}
+
+.watermarkLink {
+  color: #9C9590;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 120ms ease;
+}
+
+.watermarkLink:hover {
+  color: #F5F1EC;
+}
+
 @media (max-width: 640px) {
   .columns {
     grid-template-columns: 1fr;
     gap: 1.75rem;
+  }
+
+  .bottomBar {
+    flex-direction: column;
+    gap: 0.25rem;
+    text-align: center;
   }
 }

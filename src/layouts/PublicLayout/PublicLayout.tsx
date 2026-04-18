@@ -4,7 +4,7 @@ import { fetchVilla } from '../../api/villa';
 import type { Villa } from '../../types/villa';
 import { Navbar } from '../../components/public/Navbar';
 import { Footer } from '../../components/public/Footer';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage } from '../../hooks/useLanguage';
 import styles from './PublicLayout.module.css';
 
 export function PublicLayout() {

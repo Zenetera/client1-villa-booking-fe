@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../hooks/useLanguage';
 import styles from './Footer.module.css';
 
 export function Footer() {
@@ -47,6 +47,16 @@ export function Footer() {
               <Link to="/privacy" className={styles.link}>{t.footer.privacy}</Link>
             </nav>
           </div>
+        </div>
+
+        <div className={styles.bottomBar}>
+          <span>© 2026 Sunset Villa. All rights reserved.</span>
+          <span>
+            Website by{' '}
+            <a href="https://www.zenetera.com/" target="_blank" rel="noopener noreferrer" className={styles.watermarkLink}>
+              Zenetera
+            </a>
+          </span>
         </div>
       </div>
     </footer>

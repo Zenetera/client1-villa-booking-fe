@@ -1,5 +1,5 @@
 import { Check } from 'lucide-react';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../hooks/useLanguage';
 import styles from './AmenitiesList.module.css';
 
 interface AmenitiesListProps {

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Globe, Home, Menu, X } from 'lucide-react';
 import type { Villa } from '../../../types/villa';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../hooks/useLanguage';
 import styles from './Navbar.module.css';
 
 interface VillaDetailsProps {

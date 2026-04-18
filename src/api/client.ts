@@ -34,6 +34,12 @@ export async function api<T>(
   });
 
   if (!res.ok) {
+    if (res.status === 401) {
+      clearToken();
+      window.location.href = '/admin/login';
+      throw new Error('Session expired');
+    }
+
     const body = await res.json().catch(() => null);
     const message =
       body?.errors?.[0]?.message || `Request failed (${res.status})`;

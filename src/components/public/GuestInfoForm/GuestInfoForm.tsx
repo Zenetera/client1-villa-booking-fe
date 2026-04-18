@@ -1,5 +1,5 @@
 import type { GuestInfo } from '../../../types/booking';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../hooks/useLanguage';
 import styles from './GuestInfoForm.module.css';
 
 interface GuestInfoFormProps extends GuestInfo {

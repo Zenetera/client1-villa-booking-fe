@@ -7,7 +7,7 @@ import { submitBookingRequest } from '../../../api/booking';
 import { PriceBreakdown } from '../PriceBreakdown';
 import { GuestInfoForm } from '../GuestInfoForm';
 import { AvailabilityCalendar } from '../AvailabilityCalendar';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../hooks/useLanguage';
 import styles from './BookingForm.module.css';
 
 interface BookingFormProps {

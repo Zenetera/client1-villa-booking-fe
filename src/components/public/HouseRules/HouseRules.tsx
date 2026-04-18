@@ -1,4 +1,4 @@
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../hooks/useLanguage';
 import styles from './HouseRules.module.css';
 
 interface HouseRulesProps {

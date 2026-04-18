@@ -3,7 +3,7 @@ import type { Villa } from '../../../types/villa';
 import { AmenitiesList } from '../AmenitiesList';
 import { HouseRules } from '../HouseRules';
 import { BookingForm } from '../BookingForm';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../hooks/useLanguage';
 import styles from './VillaDetails.module.css';
 
 interface VillaDetailsProps {

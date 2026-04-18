@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../hooks/useLanguage';
 import {
   fetchPublicContactInfo,
   fetchVilla,

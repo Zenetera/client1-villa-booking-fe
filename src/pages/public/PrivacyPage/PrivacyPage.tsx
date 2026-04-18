@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../hooks/useLanguage';
 import { fetchPageBySlug, PRIVACY_SLUG, type SitePage } from '../../../api/sitePage';
 import { renderSitePageContent } from '../../../utils/renderSitePageContent';
 import styles from './PrivacyPage.module.css';

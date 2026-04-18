@@ -1,5 +1,5 @@
 import type { PricingQuote } from '../../../api/villa';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../hooks/useLanguage';
 import styles from './PriceBreakdown.module.css';
 
 interface PriceBreakdownProps {

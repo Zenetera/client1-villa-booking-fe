@@ -6,7 +6,7 @@ import { SectionIntro } from '../../../components/public/SectionIntro';
 import { VillaDetails } from '../../../components/public/VillaDetails';
 import { ImageGallery } from '../../../components/public/ImageGallery';
 import { LocationMap } from '../../../components/public/LocationMap';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../hooks/useLanguage';
 import styles from './HomePage.module.css';
 
 export function HomePage() {
