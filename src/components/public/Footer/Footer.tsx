@@ -54,7 +54,7 @@ export function Footer() {
           <span>
             Website by{' '}
             <a href="https://www.zenetera.com/" target="_blank" rel="noopener noreferrer" className={styles.watermarkLink}>
-              Zenetera
+              ZENETERA
             </a>
           </span>
         </div>

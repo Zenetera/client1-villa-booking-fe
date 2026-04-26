@@ -13,7 +13,8 @@ export function BookingSuccessPage() {
         <h1 className={styles.title}>Request received</h1>
         <p className={styles.subtitle}>
           Thank you — your booking request has been submitted. We'll review and confirm it shortly,
-          and you'll receive an email once it's approved.
+          and you'll receive an email once it's approved. If you don't see it in your inbox, please
+          check your junk or spam folder.
         </p>
         {reference && (
           <div className={styles.refBox}>
